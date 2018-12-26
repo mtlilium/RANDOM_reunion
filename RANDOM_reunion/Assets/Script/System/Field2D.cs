@@ -1,0 +1,26 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using UnityEngine;
+
+[DataContract]
+public class Field2D<T>//単純な2次元フィールド
+{
+    [DataMember]
+    public int X{get;set;}//第1インデクサーのサイズ. set時にはfieldを拡大,縮小(縮小の場合はDebug.Logでの表示)すること.
+
+    [DataMember]
+    public int Y{get;set;}//第2インデクサーのサイズ. set時にはfieldを拡大,縮小(縮小の場合はDebug.Logでの表示)すること.
+
+    [DataMember]
+    public T[][] field;//実際に値が格納されるフィールド.
+
+    //コンストラクタ. 
+    public Field2D() { }
+    public Field2D(int x,int y)//X,Y,fieldをサイズを適用し初期化すること.
+    {
+
+    }
+}
