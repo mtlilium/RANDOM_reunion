@@ -25,12 +25,12 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IJsonSaveLoadable
     public bool JsonExport(string path, string name, bool overwrite)//再帰的に適用する必要はない.
     {
-        if (overwrite)//同名ファイルの削除
+        if (overwrite)//上書きする場合同名ファイルの削除
         {
-            string absolutepath = System.IO.Path.Combine(path, name);//絶対パスの作成
-            System.IO.FileInfo(absolutepath).Delete();//作成したパスのファイル削除※ゴミ箱にいかない
+            string willdeletepath = System.IO.Path.Combine(path, name, ".json");//絶対パスの作成
+            System.IO.FileInfo(willdeletepath).Delete();//作成したパスのファイル削除※元データはゴミ箱にいかないので注意
         }
-        return JsonIO.JsonExport<MapControllScript>(this, path, name);
+        return JsonIO.JsonExport<MapControllScript>(path, name);//パス先に保存
     }
     public MapControllScript JsonImport(string path, string name)//再帰的に適用する必要はない.
     {
@@ -39,11 +39,13 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 
     public bool SaveAs(string savename, bool overwrite)//再帰的に適用する必要はない.
     {
-        return this.JsonExport(Savesmap[savename], savename, overwrite);//（マップ毎の処理が必要）
+        string willsavepath = System.IO.Path.Combine(Savesmap[savename], this.MapName);//絶対パスの作成
+        return this.JsonExport(willsavename, savename, overwrite);//パス先にセーブ
     }
     public MapControllScript LoadFrom(string savename)//再帰的に適用する必要はない.
     {
-        return JsonIO.JsonImport<MapControllScript>(Savesmap[savename], savename);//(マップ毎の処理が必要)
+        string willloadpath = System.IO.Path.Combine(Savesmap[savename], this.MapName);//絶対パスの作成
+        return JsonIO.JsonImport<MapControllScript>(willloadpath, savename);//パス先からロード
     }
 
 
@@ -55,7 +57,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()//再帰的に適用する必要はない.
     {
-        return this.JsonExport(Tempsmap[this.MapName], this.MapName, overwrite);//一時保存ディレクトリに保存
+        return this.JsonExport(Tempsmap[this.MapName], this.MapName, overwrite);//一時保存ディレクトリに保存(上書き処理が不十分かもしれない)
     }
     public MapControllScript LoadTemporary()//再帰的に適用する必要はない.
     {
