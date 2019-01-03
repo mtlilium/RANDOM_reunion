@@ -14,18 +14,29 @@ public static class JsonIO
     {  
         try
         {
-            StreamWriter exportResultStream = new StreamWriter(path + '/' + name + ".json", false, Encoding.Default);
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));
-            jsonSerializer.WriteObject(exportResultStream.BaseStream, obj);
+            StreamWriter exportResultStream = new StreamWriter(path + '/' + name + ".json", false, Encoding.Default);//ファイルを読み込み
+            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));// T 用のjsonSerializerを準備
+            jsonSerializer.WriteObject(exportResultStream.BaseStream, obj);//exportして書き込み
         }
         catch
         {
-            return false;//(返り値なしだとエラーのため適当にしています.要修正)
+            return false;//あらゆる例外に対してfalseを返す
         }
         return true;
     }
     public static T JsonImport<T>(string path, string name)//pathディレクトリの[naem].jsonを読み込む 失敗などで読み込めなければ,LogAssertionで警告を表示しdefault(T)を返す
     {
-        return default(T);//(返り値なしだとエラーのため適当にしています.要修正)
+        T importResultObj = default(T);
+        try
+        {
+            StreamReader importerStream = new StreamReader(path + '/' + name + ".json", Encoding.Default);
+            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));
+            importResultObj = (T)jsonSerializer.ReadObject(importerStream.BaseStream);
+        }
+        catch
+        {
+            return default(T);//あらゆる例外に対してdefaultを返す
+        }
+        return importResultObj;
     }
 }
