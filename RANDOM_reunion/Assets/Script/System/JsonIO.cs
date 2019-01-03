@@ -11,12 +11,14 @@ using UnityEngine;
 public static class JsonIO
 {
     public static bool JsonExport<T>(T obj, string path, string name)//objをpathディレクトリに[naem].jsonとして保存 成功すればtrue 失敗すればfalse
-    {  
+    {
         try
         {
-            StreamWriter exportResultStream = new StreamWriter(path + '/' + name + ".json", false, Encoding.Default);//ファイルを読み込み
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));// T 用のjsonSerializerを準備
-            jsonSerializer.WriteObject(exportResultStream.BaseStream, obj);//exportして書き込み
+            using (StreamWriter exportResultStream = new StreamWriter(path + '/' + name + ".json", false, Encoding.Default))//ファイルを読み込み
+            {
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));// T 用のjsonSerializerを準備
+                jsonSerializer.WriteObject(exportResultStream.BaseStream, obj);//exportして書き込み
+            }
         }
         catch
         {
@@ -27,16 +29,20 @@ public static class JsonIO
     public static T JsonImport<T>(string path, string name)//pathディレクトリの[naem].jsonを読み込む 失敗などで読み込めなければ,LogAssertionで警告を表示しdefault(T)を返す
     {
         T importResultObj = default(T);
+
         try
         {
-            StreamReader importerStream = new StreamReader(path + '/' + name + ".json", Encoding.Default);
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));
-            importResultObj = (T)jsonSerializer.ReadObject(importerStream.BaseStream);
+            using (StreamReader importerStream = new StreamReader(path + '/' + name + ".json", Encoding.Default))
+            {
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));
+                importResultObj = (T)jsonSerializer.ReadObject(importerStream.BaseStream);
+            }
         }
-        catch
+        catch (Exception e)
         {
             return default(T);//あらゆる例外に対してdefaultを返す
         }
+        
         return importResultObj;
     }
 }
