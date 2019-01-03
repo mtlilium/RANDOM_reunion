@@ -32,10 +32,10 @@ public static class JsonIO
 
         try
         {
-            using (StreamReader importerStream = new StreamReader(path + '/' + name + ".json", Encoding.Default))
+            using (StreamReader importerStream = new StreamReader(path + '/' + name + ".json", Encoding.Default))//ファイルを読み込み
             {
-                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));
-                importResultObj = (T)jsonSerializer.ReadObject(importerStream.BaseStream);
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(T));// T 用のjsonSerializerを準備
+                importResultObj = (T)jsonSerializer.ReadObject(importerStream.BaseStream);//読み込みしてimport
             }
         }
         catch (Exception e)
