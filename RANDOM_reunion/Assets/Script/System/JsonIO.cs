@@ -1,14 +1,22 @@
 using System;
+using System.IO;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using UnityEngine;
 
+
 public static class JsonIO
 {
     public static bool JsonExport<T>(T obj, string path, string name)//objをpathディレクトリに[naem].jsonとして保存 成功すればtrue 失敗すればfalse
     {
+        DataContractJsonSerializer jsonSerializer=new DataContractJsonSerializer(typeof(T));
+        MemoryStream exportResultStream=new MemoryStream();
+        jsonSerializer.WriteObject(exportResultStream, obj);
+        string exportResultString = Encoding.UTF8.GetString( exportResultStream.ToArray() );
+        File.WriteAllText(path + '/' + name + ".json", exportResultString);
         return false;//(返り値なしだとエラーのため適当にしています.要修正)
     }
     public static T JsonImport<T>(string path, string name)//pathディレクトリの[naem].jsonを読み込む 失敗などで読み込めなければ,LogAssertionで警告を表示しdefault(T)を返す
