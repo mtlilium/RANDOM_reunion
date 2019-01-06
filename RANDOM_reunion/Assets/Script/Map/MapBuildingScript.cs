@@ -104,11 +104,26 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         string DirectoryPath = "Data/Building/" + Parent.MapName + "/" + buildingname + "/Default";
         BuildingName = buildingname;
         JsonImport(DirectoryPath, BuildingName);
+
+        //MapChipの生成
+        for (int i = 0; i < ChipField.X; i++)
+        {
+            for (int j = 0; j < ChipField.Y; j++)
+            {
+                MapChipScript mcs = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();
+
+                mcs.Parent = this;
+                mcs.SpriteID = ChipField.field[i][j].SpriteID;
+                mcs.Collision = ChipField.field[i][j].Collision;
+                mcs.Coordinate = ChipField.field[i][j].Coordinate;
+                mcs.Refresh();
+            }
+        }
     }
 
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
-		ChipField.Foreach (x => x.Refresh());
+        ChipField.Foreach (x => x.Refresh());
     }
 }
