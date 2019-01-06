@@ -40,6 +40,7 @@ public static class JsonIO
         }
         catch (Exception e)
         {
+            Debug.LogAssertion($"JsonIO.JsonImport<{typeof(T)}>()内で{path + '/' + name + ".json"}を読み込もうとした際に例外が発生.");
             return default(T);//あらゆる例外に対してdefaultを返す
         }
         
