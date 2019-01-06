@@ -102,5 +102,9 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
         MapSurface.Refresh();
+        foreach(var x in Buildings)
+        {
+            x.Value.Refresh();
+        }
     }
 }
