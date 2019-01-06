@@ -134,6 +134,8 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
+        Parent = transform.parent.GetComponent<MapControllScript>();
+        transform.position = Origin.ToVector3();
         if (!HasMapChip)
         {
             InstantiateMapChip();
