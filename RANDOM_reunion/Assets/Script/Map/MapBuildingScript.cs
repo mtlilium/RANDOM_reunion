@@ -27,77 +27,68 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IJsonSaveLoadable
     public bool JsonExport(string path, string name, bool overwrite)
     {
-		string FilePath = path + "/" + name + ".json";
-		if((File.Exists(FilePath) && overwrite) || !(File.Exists(path + "/" + name)))
-		{
-			JsonIO.JsonExport<MapBuildingScript> (this, path, name);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string filePath = path + "/" + name + ".json";
+
+        if (File.Exists(filePath) && !overwrite)
+        {
+            return false;
+        }
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        return JsonIO.JsonExport(this, path, name);
     }
     public bool JsonImport(string path, string name)
     {
-		string FilePath = path + "/" + name + ".json";
-		if (File.Exists (FilePath)) 
-		{
-			JsonIO.JsonImport<MapBuildingScript> (path, name);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+        string FilePath = path + "/" + name + ".json";
+        if (!File.Exists(FilePath))
+        {
+            return false;
+        }
+        MapBuildingScript scr = JsonIO.JsonImport<MapBuildingScript>(path, name);
+
+        Origin = scr?.Origin;
+        BuildingName = scr?.BuildingName;
+        Status = scr?.Status;
+        ChipField = scr?.ChipField;
+
+        return true;
     }
     public bool SaveAs(string savename, bool overwrite)
     {
-		string DirectoryPath = "Save/" + savename + "/" + Parent.MapName;
-		if (Directory.Exists (DirectoryPath) && overwrite) 
-		{
-			JsonIO.JsonExport<MapBuildingScript> (this, DirectoryPath, Parent.MapName);
-		} else {
-			Directory.CreateDirectory (DirectoryPath);
-			JsonIO.JsonExport<MapBuildingScript> (this, DirectoryPath, Parent.MapName);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+        return JsonExport(DirectoryPath, BuildingName, overwrite);
     }
     public bool LoadFrom(string savename)
     {
-		string DirectoryPath = "Save/" + savename + "/" + Parent.MapName;
-		if (Directory.Exists (DirectoryPath)) 
-		{
-			JsonIO.JsonImport<MapBuildingScript> (DirectoryPath, Parent.MapName);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+        string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+        return JsonImport(DirectoryPath, BuildingName);
     }
 
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()
     {
-		string DirectoryPath = "Temporary/" + Parent.MapName;
-		if (Directory.Exists (DirectoryPath)) 
-		{
-			JsonIO.JsonExport<MapBuildingScript> (this, DirectoryPath, Parent.MapName);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string DirectoryPath = Application.dataPath + "Temporary/" + Parent.MapName;
+        return JsonExport(DirectoryPath, BuildingName, true);
     }
     public bool LoadTemporary()
     {
 		string DirectoryPath = "Temporary/" + Parent.MapName;
-		if(Directory.Exists (DirectoryPath))
-		{
-			JsonIO.JsonImport<MapBuildingScript> (DirectoryPath, Parent.MapName);
-		}
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+        return JsonImport(DirectoryPath, BuildingName);
     }
 
     //IJsonInitializable
     public void Initialize(string buildingname) //建物名を引数にとり,対応するディレクトリからInitial.jsonを読み込み,Status,ChipFieldに適用する.またbuildingnameも変える.
     {
-		string DirectoryPath = "Data/Building/" + Parent.MapName + buildingname;
-		MapBuildingScript tmp = JsonIO.JsonImport<MapBuildingScript> (DirectoryPath + "/Initial.json", buildingname);
-		this.BuildingName = tmp.BuildingName;
-		this.Status = tmp.Status;
-		this.ChipField = tmp.ChipField;
+        string DirectoryPath = "Data/Building/" + Parent.MapName + "/" + buildingname + "/Default";
+        BuildingName = buildingname;
+        JsonImport(DirectoryPath, BuildingName);
     }
 
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
-		//ChipField.Foreach (x => x.Refresh());
+		ChipField.Foreach (x => x.Refresh());
     }
 }
