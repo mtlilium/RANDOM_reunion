@@ -21,6 +21,9 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     [DataMember]
     public string Status;//建物の状況名(InitialやUnderconstructionなど)
 
+    [IgnoreDataMember]
+    public bool HasMapChip { get; private set; } = false; // すでにマップチップが生成されたかを示す
+
     [DataMember]
     public Field2D<MapChipScript> ChipField;//マップチップの管理
 
@@ -104,8 +107,14 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         string DirectoryPath = "Data/Building/" + Parent.MapName + "/" + buildingname + "/Default";
         BuildingName = buildingname;
         JsonImport(DirectoryPath, BuildingName);
+    }
 
-        //MapChipの生成
+    private void InstantiateMapChip()//MapChipの生成
+    {
+        if (HasMapChip)
+        {
+            return;
+        }
         for (int i = 0; i < ChipField.X; i++)
         {
             for (int j = 0; j < ChipField.Y; j++)
@@ -119,11 +128,16 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
                 mcs.Refresh();
             }
         }
+        HasMapChip = true;
     }
 
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
+        if (!HasMapChip)
+        {
+            InstantiateMapChip();
+        }
         ChipField.Foreach (x => x.Refresh());
     }
 }
