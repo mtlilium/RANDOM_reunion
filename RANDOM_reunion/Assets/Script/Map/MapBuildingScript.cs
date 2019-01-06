@@ -58,24 +58,44 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public bool SaveAs(string savename, bool overwrite)
     {
 		string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
-        return JsonExport(DirectoryPath, BuildingName, overwrite);
+        if(!JsonExport(DirectoryPath, BuildingName, overwrite))
+        {
+            Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
+            return false;
+        }
+        return true;
     }
     public bool LoadFrom(string savename)
     {
         string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
-        return JsonImport(DirectoryPath, BuildingName);
+        if (!JsonImport(DirectoryPath, BuildingName))
+        {
+            Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
+            return false;
+        }
+        return true;
     }
 
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()
     {
 		string DirectoryPath = Application.dataPath + "Temporary/" + Parent.MapName;
-        return JsonExport(DirectoryPath, BuildingName, true);
+        if (!JsonExport(DirectoryPath, BuildingName, true))
+        {
+            Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
+            return false;
+        }
+        return true;
     }
     public bool LoadTemporary()
     {
 		string DirectoryPath = "Temporary/" + Parent.MapName;
-        return JsonImport(DirectoryPath, BuildingName);
+        if (!JsonImport(DirectoryPath, BuildingName))
+        {
+            Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
+            return false;
+        }
+        return true;
     }
 
     //IJsonInitializable
