@@ -21,6 +21,22 @@ public class Field2D<T>//単純な2次元フィールド
     public Field2D() { }
     public Field2D(int x,int y)//X,Y,fieldをサイズを適用し初期化すること.
     {
-
+        X = x;
+        Y = y;
+        field = new T[X][];
+        for(int i = 0; i < X; i++)
+        {
+            field[i] = new T[Y];
+        }
+    }
+    public void Foreach(Action<T> action)
+    {
+        for (int i = 0; i < X; i++)
+        {
+            for (int j = 0; j < Y; j++)
+            {
+                action(field[i][j]);
+            }
+        }
     }
 }

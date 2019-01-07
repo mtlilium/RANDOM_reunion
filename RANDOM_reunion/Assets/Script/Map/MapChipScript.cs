@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 [DataContract]
-public class MapChipScript : MonoBehaviour , IJsonSaveLoadable ,IJsonTemporarySaveLoadable, IVisibleObject {
+public class MapChipScript : MonoBehaviour , IVisibleObject {
     public static readonly int CHIP_WIDTH = 1;//マップチップ間の横の大きさ(空白だとエラーのため適当に1にしています.要修正)
     public static readonly int CHIP_HEIGHT = 1;//マップチップ間の縦の大きさ(空白だとエラーのため適当に1にしています.要修正)
 
@@ -22,34 +22,10 @@ public class MapChipScript : MonoBehaviour , IJsonSaveLoadable ,IJsonTemporarySa
     [DataMember]
     public MapCoordinate Coordinate{get;set;}//MapCoordinateでの座標
     
-    //IJsonSaveLoadable
-    public bool JsonExport(string path, string name, bool overwrite)
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-    public bool JsonImport(string path, string name)
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-    public bool SaveAs(string savename, bool overwrite)
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-    public bool LoadFrom(string savename)
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-
-    //IJsonTemporarySaveLoadable
-    public bool SaveTemporary()
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-    public bool LoadTemporary()
-    {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
-    }
-
     //IVisibleObject
-    public void Refresh() { }//メンバもRefresh()を持っていれば再帰的に適用する.
+    public void Refresh() {
+        GetComponent<SpriteRenderer>().sprite = SystemVariables.SpriteList?[SpriteID] ?? SystemVariables.SpriteList?[0];
+        GetComponent<MeshCollider>().enabled = Collision;
+        transform.position = Coordinate.ToVector3();
+    }
 }

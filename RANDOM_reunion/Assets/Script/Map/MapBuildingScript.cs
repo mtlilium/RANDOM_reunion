@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -20,46 +21,125 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     [DataMember]
     public string Status;//建物の状況名(InitialやUnderconstructionなど)
 
+    [IgnoreDataMember]
+    public bool HasMapChip { get; private set; } = false; // すでにマップチップが生成されたかを示す
+
     [DataMember]
     public Field2D<MapChipScript> ChipField;//マップチップの管理
 
     //IJsonSaveLoadable
     public bool JsonExport(string path, string name, bool overwrite)
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string filePath = path + "/" + name + ".json";
+
+        if (File.Exists(filePath) && !overwrite)
+        {
+            return false;
+        }
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        return JsonIO.JsonExport(this, path, name);
     }
     public bool JsonImport(string path, string name)
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+        string FilePath = path + "/" + name + ".json";
+        if (!File.Exists(FilePath))
+        {
+            return false;
+        }
+        MapBuildingScript scr = JsonIO.JsonImport<MapBuildingScript>(path, name);
+
+        Origin = scr?.Origin;
+        BuildingName = scr?.BuildingName;
+        Status = scr?.Status;
+        ChipField = scr?.ChipField;
+
+        return true;
     }
     public bool SaveAs(string savename, bool overwrite)
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+        if(!JsonExport(DirectoryPath, BuildingName, overwrite))
+        {
+            Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
+            return false;
+        }
+        return true;
     }
     public bool LoadFrom(string savename)
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+        string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+        if (!JsonImport(DirectoryPath, BuildingName))
+        {
+            Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
+            return false;
+        }
+        return true;
     }
 
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string DirectoryPath = Application.dataPath + "Temporary/" + Parent.MapName;
+        if (!JsonExport(DirectoryPath, BuildingName, true))
+        {
+            Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
+            return false;
+        }
+        return true;
     }
     public bool LoadTemporary()
     {
-        return false;//(返り値なしだとエラーのため適当にしています.要修正)
+		string DirectoryPath = "Temporary/" + Parent.MapName;
+        if (!JsonImport(DirectoryPath, BuildingName))
+        {
+            Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
+            return false;
+        }
+        return true;
     }
 
     //IJsonInitializable
     public void Initialize(string buildingname) //建物名を引数にとり,対応するディレクトリからInitial.jsonを読み込み,Status,ChipFieldに適用する.またbuildingnameも変える.
     {
+        string DirectoryPath = "Data/Building/" + Parent.MapName + "/" + buildingname + "/Default";
+        BuildingName = buildingname;
+        JsonImport(DirectoryPath, BuildingName);
+    }
 
+    private void InstantiateMapChip()//MapChipの生成
+    {
+        if (HasMapChip)
+        {
+            return;
+        }
+        for (int i = 0; i < ChipField.X; i++)
+        {
+            for (int j = 0; j < ChipField.Y; j++)
+            {
+                MapChipScript mcs = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();
+
+                mcs.Parent = this;
+                mcs.SpriteID = ChipField.field[i][j].SpriteID;
+                mcs.Collision = ChipField.field[i][j].Collision;
+                mcs.Coordinate = ChipField.field[i][j].Coordinate;
+                mcs.Refresh();
+            }
+        }
+        HasMapChip = true;
     }
 
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
-
+        Parent = transform.parent.GetComponent<MapControllScript>();
+        transform.position = Origin.ToVector3();
+        if (!HasMapChip)
+        {
+            InstantiateMapChip();
+        }
+        ChipField.Foreach (x => x.Refresh());
     }
 }
