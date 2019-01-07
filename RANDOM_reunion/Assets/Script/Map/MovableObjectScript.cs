@@ -7,14 +7,21 @@ using UnityEngine;
 
 public class MovableObjectScript : MonoBehaviour {
     Rigidbody2D rigid2D;
-    Vector2 from = rigid2D.transform.position;
+    public static Vector2 from = rigid2D.transform.position;
 
-    public void Move(Vector2 to, MapCoordinate mapcoodinate)
+    public void Move(Vector2Int to)
     {
-        Vector2.Leap(this.from, from + to, 1);
-        mapcoodinate.x += to.x;
-        mapcoodinate.y += to.y;
+        Vector2.Lerp(this.from, from + to, 1);
+        
         return;
     }
-	
+    public override Vector2 ToVector2()
+    {//Vector2に変換
+        return new Vector2(
+        (-x + y) / 2f / MapChipScript.CHIP_WIDTH,
+        (x + y) / 2f / MapChipScript.CHIP_HEIGHT
+     );
+    }
+
+
 }
