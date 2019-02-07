@@ -14,11 +14,18 @@ public class MapCoordinate{
 
     public Vector2 ToVector2(){//Vector2に変換
         return new Vector2(
-            (-x + y)/ 2f / MapChipScript.CHIP_WIDTH,
-            ( x + y)/ 2f / MapChipScript.CHIP_HEIGHT
+            (-x + y)/ (2f / MapChipScript.CHIP_WIDTH),
+            ( x + y)/ (2f / MapChipScript.CHIP_HEIGHT)
         );
     }
     public float Depth(){//マップチップの標準的な深さに変換
         return x + y;
+    }
+    public Vector3 ToVector3(){//Vector3に変換
+        return new Vector3(
+            (-x + y) / (2f / MapChipScript.CHIP_WIDTH),
+            (x + y) / (2f / MapChipScript.CHIP_HEIGHT),
+            x + y
+        );
     }
 }
