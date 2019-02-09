@@ -22,10 +22,10 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public string Status;//建物の状況名(DefaultやUnderconstructionなど)
     
     [DataMember]
-    public int MapChipIDField_Width { get; private set; } = 0;//マップチップIDの管理フィールドの横の大きさ(建物の横の大きさ)
+    public int MapChipIDField_Width { get; set; } = 0;//マップチップIDの管理フィールドの横の大きさ(建物の横の大きさ)
 
     [DataMember]
-    public int MapChipIDField_Height { get; private set; } = 0;//マップチップID管理フィールドの縦の大きさ(建物の縦の大きさ)
+    public int MapChipIDField_Height { get; set; } = 0;//マップチップID管理フィールドの縦の大きさ(建物の縦の大きさ)
 
     [DataMember]
     public Field2D<int> MapChipIDField;//マップチップIDの管理フィールド

@@ -24,6 +24,7 @@ public class MapChipScript : MonoBehaviour , IVisibleObject {
     
     //IVisibleObject
     public void Refresh() {
+        Parent = transform.parent.GetComponent<MapBuildingScript>();
         GetComponent<SpriteRenderer>().sprite = SystemVariables.SpriteList?[SpriteID] ?? SystemVariables.SpriteList?[0];
         GetComponent<MeshCollider>().enabled = Collision;
         transform.position = Coordinate.ToVector3();

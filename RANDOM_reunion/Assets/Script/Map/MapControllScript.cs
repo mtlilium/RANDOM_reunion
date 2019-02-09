@@ -100,7 +100,10 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         string DirectoryPath = "Data/Building/" + MapName;
 
         if (MapSurface == null)
+        {
             MapSurface = new GameObject().AddComponent<MapBuildingScript>();
+            MapSurface.transform.parent = transform;
+        }
 
         MapSurface.JsonImport(DirectoryPath + "/" + "Surface", "Default");
 
@@ -110,8 +113,11 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         foreach (var b in BuildingName)
         {
             if (Buildings[b] == null)
+            {
                 Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
+            }
 
+            Buildings[b].transform.parent = transform;
             Buildings[b].JsonImport(DirectoryPath + "/" + b, "Default");
         }
     }
