@@ -11,10 +11,10 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     [DataMember]
     public string MapName { get; private set; }//マップ名
 
-    [DataMember]
+    [IgnoreDataMember]
     public MapBuildingScript MapSurface;//地表を取り扱うMapObject. 他のあらゆるMapObjectよりも奥で描写する.
 
-    [DataMember]
+    [IgnoreDataMember]
     public Dictionary<string, MapBuildingScript> Buildings;//キー: 建物名, 値: 対応するMapBuildingScriptとする.
 
     //IJsonSaveLoadable
@@ -42,8 +42,6 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         MapControllScript mcs = JsonIO.JsonImport<MapControllScript>(path, name);
 
         MapName = mcs?.MapName;
-        MapSurface = mcs?.MapSurface;
-        Buildings = mcs?.Buildings;
 
         return true;
     }
