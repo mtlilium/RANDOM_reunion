@@ -145,6 +145,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         string DirectoryPath = "Data/Building/" + Parent.MapName + "/" + buildingname + "/Default";
         BuildingName = buildingname;
         JsonImport(DirectoryPath, BuildingName);
+        InstantiateMapChip();
     }
 
     private void InstantiateMapChip()//MapChipの生成

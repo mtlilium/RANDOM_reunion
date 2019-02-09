@@ -11,6 +11,9 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     [DataMember]
     public string MapName { get; private set; }//マップ名
 
+    [DataMember]
+    public string[] BuildingName { get; private set; }//マップ内の建物名
+
     [IgnoreDataMember]
     public MapBuildingScript MapSurface;//地表を取り扱うMapObject. 他のあらゆるMapObjectよりも奥で描写する.
 
@@ -42,6 +45,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         MapControllScript mcs = JsonIO.JsonImport<MapControllScript>(path, name);
 
         MapName = mcs?.MapName;
+        BuildingName = mcs?.BuildingName;
 
         return true;
     }
@@ -93,8 +97,23 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public void Initialize(string mapname) //マップ名を引数にとり,対応するディレクトリからInitial.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
     {
         MapName = mapname;
-        string DirectoryPath = "Data/Building/" + MapName + "/" + "Surface/Default";
-        JsonImport(DirectoryPath, MapName);
+        string DirectoryPath = "Data/Building/" + MapName;
+
+        if (MapSurface == null)
+            MapSurface = new GameObject().AddComponent<MapBuildingScript>();
+
+        MapSurface.JsonImport(DirectoryPath + "/" + "Surface", "Default");
+
+        if (Buildings == null)
+            Buildings = new Dictionary<string, MapBuildingScript>();
+
+        foreach (var b in BuildingName)
+        {
+            if (Buildings[b] == null)
+                Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
+
+            Buildings[b].JsonImport(DirectoryPath + "/" + b, "Default");
+        }
     }
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
