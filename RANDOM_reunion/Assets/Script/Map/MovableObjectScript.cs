@@ -17,7 +17,16 @@ public class MovableObjectScript : MonoBehaviour
 
     public void Move(MapCoordinate mapcoordinate)//MapCoordinateのToVector2の方向に移動
     {
-        rb2d.MovePosition(mapcoordinate.ToVector2());
+        Move(mapcoordinate.ToVector2());
+    }
+    public void Move(Vector2 direction,float q)//引数の方向に移動量Qだけ移動
+    {
+        Move(direction.normalized * q);
+    }
+
+    public void Move(MapCoordinate mapcoordinate, float q)//MapCoordinateのToVector2の方向に移動量Qだけ移動
+    {
+        Move(mapcoordinate.ToVector2(),q);
     }
 
     private void Awake()//起動時Rigidbody2Dを取得
