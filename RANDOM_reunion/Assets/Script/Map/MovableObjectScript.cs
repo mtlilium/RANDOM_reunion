@@ -13,11 +13,11 @@ public class MovableObjectScript : MonoBehaviour
 
     public void Move(Vector2 direction)//引数の方向に移動に移動量movementだけ移動
     {
-        rb2d.MovePosition(direction.normalized * movement);
+        rb2d.MovePosition(rb2d.position + direction.normalized * movement);
     }
     public void Move(Vector2 direction, float q)//引数の方向に移動量Qだけ移動
     {
-        rb2d.MovePosition(direction.normalized * q);
+        rb2d.MovePosition(rb2d.position + direction.normalized * q);
     }
 
     public void Move(MapCoordinate mapcoordinate)//MapCoordinateのToVector2の方向に移動量movementだけ移動
