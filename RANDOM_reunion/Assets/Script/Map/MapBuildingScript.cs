@@ -25,7 +25,16 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public bool HasMapChip { get; private set; } = false; // すでにマップチップが生成されたかを示す
 
     [DataMember]
-    public Field2D<MapChipScript> ChipField;//マップチップの管理
+    public int MapChipIDField_Width { get; private set; } = 0;//マップチップIDの管理フィールドの横の大きさ(建物の横の大きさ)
+
+    [DataMember]
+    public int MapChipIDField_Height { get; private set; } = 0;//マップチップID管理フィールドの縦の大きさ(建物の縦の大きさ)
+
+    [DataMember]
+    public Field2D<int> MapChipIDField;//マップチップIDの管理フィールド
+
+    [IgnoreDataMember]
+    public Field2D<MapChipScript> MapChipField;//マップチップの管理
 
     //IJsonSaveLoadable
     public bool JsonExport(string path, string name, bool overwrite)
@@ -54,8 +63,8 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         Origin = scr?.Origin;
         BuildingName = scr?.BuildingName;
         Status = scr?.Status;
-        ChipField = scr?.ChipField;
-
+        MapChipIDField_Width = scr.MapChipIDField_Width;
+        MapChipIDField_Height = scr.MapChipIDField_Height;
         return true;
     }
     public bool SaveAs(string savename, bool overwrite)
@@ -115,16 +124,16 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             return;
         }
-        for (int i = 0; i < ChipField.X; i++)
+        for (int i = 0; i < MapChipIDField_Width; i++)
         {
-            for (int j = 0; j < ChipField.Y; j++)
+            for (int j = 0; j < MapChipIDField_Height; j++)
             {
                 MapChipScript mcs = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();
 
                 mcs.Parent = this;
-                mcs.SpriteID = ChipField.field[i][j].SpriteID;
-                mcs.Collision = ChipField.field[i][j].Collision;
-                mcs.Coordinate = ChipField.field[i][j].Coordinate;
+                mcs.SpriteID = MapChipField.field[i][j].SpriteID;
+                mcs.Collision = MapChipField.field[i][j].Collision;
+                mcs.Coordinate = MapChipField.field[i][j].Coordinate;
                 mcs.Refresh();
             }
         }
@@ -140,6 +149,6 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             InstantiateMapChip();
         }
-        ChipField.Foreach (x => x.Refresh());
+        MapChipField.Foreach (x => x.Refresh());
     }
 }
