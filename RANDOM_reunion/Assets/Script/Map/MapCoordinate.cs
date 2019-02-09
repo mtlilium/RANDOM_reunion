@@ -25,7 +25,7 @@ public class MapCoordinate{
         return new Vector3(
             (-x + y) / (2f / MapChipScript.CHIP_WIDTH),
             (x + y) / (2f / MapChipScript.CHIP_HEIGHT),
-            x + y
+             Depth()
         );
     }
 }
