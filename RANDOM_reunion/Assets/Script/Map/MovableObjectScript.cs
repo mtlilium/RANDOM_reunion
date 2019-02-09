@@ -10,13 +10,12 @@ public class MovableObjectScript : MonoBehaviour
     Rigidbody2D rb2d;
 
 
-    public void Move(Vector2 direction)//引数の方向に瞬間移動
+    public void Move(Vector2 direction)//引数の方向に移動
     {
         rb2d.MovePosition(direction);
-        return;
     }
 
-    public void Move(MapCoordinate mapcoordinate)//MapCoordinateのToVector2の方向に瞬間移動
+    public void Move(MapCoordinate mapcoordinate)//MapCoordinateのToVector2の方向に移動
     {
         rb2d.MovePosition(mapcoordinate.ToVector2());
     }
