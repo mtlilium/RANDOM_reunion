@@ -19,11 +19,8 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public string BuildingName;//建物などの名前(House1など)
 
     [DataMember]
-    public string Status;//建物の状況名(InitialやUnderconstructionなど)
-
-    [IgnoreDataMember]
-    public bool HasMapChip { get; private set; } = false; // すでにマップチップが生成されたかを示す
-
+    public string Status;//建物の状況名(DefaultやUnderconstructionなど)
+    
     [DataMember]
     public int MapChipIDField_Width { get; private set; } = 0;//マップチップIDの管理フィールドの横の大きさ(建物の横の大きさ)
 
@@ -33,8 +30,38 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     [DataMember]
     public Field2D<int> MapChipIDField;//マップチップIDの管理フィールド
 
+    [DataMember]
+    public Field2D<bool> CollisionField;//マップチップの衝突判定の管理フィールド
+
     [IgnoreDataMember]
     public Field2D<MapChipScript> MapChipField;//マップチップの管理
+
+    public bool ApplyInfoToMapChip()//自身の持つマップチップ情報を子のマップチップに適用
+    {
+        if (MapChipField == null)
+            return false;
+        else
+        {
+            try
+            {
+                for (int i = 0; i < MapChipIDField_Width; i++)
+                {
+                    for (int j = 0; j < MapChipIDField_Height; j++)
+                    {
+                        MapChipField.field[i][j].SpriteID = MapChipIDField.field[i][j];
+                        //MapChipField.field[i][j].Collision = CollisionField.field[i][j]; //現在当たり判定のデータの取り扱いが不明なためコメントアウト中
+                        MapChipField.field[i][j].transform.position = (Origin + new MapCoordinate(i, j)).ToVector3();
+                    }
+                }
+            }
+            catch
+            {
+                Debug.Log("マップチップの更新に失敗");
+                return false;
+            }
+            return true;
+        }
+    }
 
     //IJsonSaveLoadable
     public bool JsonExport(string path, string name, bool overwrite)
@@ -60,11 +87,13 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         }
         MapBuildingScript scr = JsonIO.JsonImport<MapBuildingScript>(path, name);
 
-        Origin = scr?.Origin;
-        BuildingName = scr?.BuildingName;
-        Status = scr?.Status;
+        Origin = scr.Origin;
+        BuildingName = scr.BuildingName;
+        Status = scr.Status;
         MapChipIDField_Width = scr.MapChipIDField_Width;
         MapChipIDField_Height = scr.MapChipIDField_Height;
+        MapChipIDField = scr.MapChipIDField;
+        CollisionField = scr.CollisionField;
         return true;
     }
     public bool SaveAs(string savename, bool overwrite)
@@ -120,24 +149,19 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 
     private void InstantiateMapChip()//MapChipの生成
     {
-        if (HasMapChip)
+        if (MapChipField != null)
         {
             return;
         }
+        MapChipField = new Field2D<MapChipScript>(MapChipIDField_Width, MapChipIDField_Height);
         for (int i = 0; i < MapChipIDField_Width; i++)
         {
             for (int j = 0; j < MapChipIDField_Height; j++)
             {
-                MapChipScript mcs = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();
-
-                mcs.Parent = this;
-                mcs.SpriteID = MapChipField.field[i][j].SpriteID;
-                mcs.Collision = MapChipField.field[i][j].Collision;
-                mcs.Coordinate = MapChipField.field[i][j].Coordinate;
-                mcs.Refresh();
+                MapChipField.field[i][j] = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();                
             }
         }
-        HasMapChip = true;
+        ApplyInfoToMapChip();
     }
 
     //IVisibleObject
@@ -145,7 +169,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     {
         Parent = transform.parent.GetComponent<MapControllScript>();
         transform.position = Origin.ToVector3();
-        if (!HasMapChip)
+        if (!(MapChipField != null))
         {
             InstantiateMapChip();
         }
