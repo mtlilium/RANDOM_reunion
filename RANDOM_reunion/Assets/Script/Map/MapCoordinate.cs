@@ -8,9 +8,29 @@ using UnityEngine;
 [DataContract]
 public class MapCoordinate{
     [DataMember]
-    public int x;
+    public float x;
     [DataMember]
-    public int y;
+    public float y;
+    
+    public MapCoordinate(float _x, float _y)
+    {
+        x = _x;
+        y = _y;
+    }
+    public MapCoordinate(Vector2 v)
+    {
+        x = v.x;
+        y = v.y;
+    }
+
+    public static MapCoordinate operator + (MapCoordinate lhs, MapCoordinate rhs)
+    {
+        return new MapCoordinate(lhs.x + rhs.x, lhs.y + rhs.y);
+    }
+    public static MapCoordinate operator - (MapCoordinate lhs, MapCoordinate rhs)
+    {
+        return new MapCoordinate(lhs.x - rhs.x, lhs.y - rhs.y);
+    }
 
     public Vector2 ToVector2(){//Vector2に変換
         return new Vector2(
