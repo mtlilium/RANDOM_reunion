@@ -130,4 +130,11 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
             x.Value.Refresh();
         }
     }
+
+	void LoadMap(string mapname){
+		foreach (Transform child in this.gameObject.transform) {
+			GameObject.Destroy (child.gameObject);
+		}
+		Initialize (mapname);
+	}
 }
