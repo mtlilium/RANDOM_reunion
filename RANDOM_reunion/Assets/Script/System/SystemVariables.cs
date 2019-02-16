@@ -13,6 +13,7 @@ public static class SystemVariables//システム関係の変数を司る静的�
 
     public static void CopiedFrom(SystemScript scr)//scrをコピー
     {
-
+        SpriteList = scr.SpriteList;
+        MapChipPrefab = scr.MapChipPrefab;
     }
 }
