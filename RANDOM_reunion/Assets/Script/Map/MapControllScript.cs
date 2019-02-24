@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 [DataContract]
-public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject {
+public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject {
     [DataMember]
     public string MapName { get; private set; }//マップ名
 

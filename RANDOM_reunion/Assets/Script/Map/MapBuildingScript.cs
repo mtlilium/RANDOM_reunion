@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 [DataContract]
-public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
+public class MapBuildingScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
 {
     [IgnoreDataMember]
     public MapControllScript Parent { get; set; }//このスクリプトを管理するMapController
