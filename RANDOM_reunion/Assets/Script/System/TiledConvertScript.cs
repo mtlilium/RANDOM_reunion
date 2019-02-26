@@ -17,10 +17,13 @@ public sealed class LayerData
     // 変数(DataMember)
     //====================================================================================
     [DataMember] 
-    private int[] data = null;
+    private long[] data = null;
 
     [DataMember] 
     private int height = 0;
+
+    [DataMember]
+    private int id=0;
 
     [DataMember] 
     private string name = string.Empty;
@@ -47,7 +50,7 @@ public sealed class LayerData
     // プロパティ
     //====================================================================================
     [IgnoreDataMember] 
-    public int[] Data { get { return data; } }
+    public long[] Data { get { return data; } }
 
     [IgnoreDataMember] 
     public int Height { get { return height; } }
@@ -119,6 +122,9 @@ public sealed class TileMapData
     [DataMember] 
     private LayerData[] layers = null;
 
+    [DataMember]
+    private int nextlayerid = 0;
+
     [DataMember] 
     private int nextobjectid = 0;
 
@@ -144,7 +150,7 @@ public sealed class TileMapData
     private string type = string.Empty;
 
     [DataMember] 
-    private int version = 0;
+    private float version = 0;
 
     [DataMember] 
     private int width = 0;
@@ -186,7 +192,7 @@ public sealed class TileMapData
     public string Type { get { return type; } }
 
     [IgnoreDataMember] 
-    public int Version { get { return version; } }
+    public float Version { get { return version; } }
 
     [IgnoreDataMember] 
     public int Width { get { return width; } }
