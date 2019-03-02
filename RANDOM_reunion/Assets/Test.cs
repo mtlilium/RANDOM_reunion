@@ -9,18 +9,20 @@ public class Test : MonoBehaviour {
 		//MapBuildingScript map=new MapBuildingScript();
 		//map=JsonIO.JsonImport<MapBuildingScript>(Application.dataPath,"mapBuildingScriptTest");
 		
-		string fileName="sample";
+		string fileName="JsonExportFromTiledTestResult";
 		//TileMapData tileMapData=new TileMapData();
 		//JsonIO.JsonExport(tileMapData,Application.dataPath,fileName);
 		/* TileMapData tileMapData=JsonIO.JsonImport<TileMapData>(Application.dataPath,fileName);
 		Debug.Log("Width:"+tileMapData.Width); */
 		
-		if(JsonIO.JsonExportFromTiled(Application.dataPath,"JsonExportFromTiledTestResult")){
+		if(JsonIO.JsonExportFromTiled(Application.dataPath,fileName)){
 			Debug.Log("success");
 		}else{
 			Debug.Log("failed");
 		}
-		
+		MapBuildingScript mp = JsonIO.JsonImport<MapBuildingScript> (Application.dataPath, fileName);
+		Debug.Log ("Width:"+mp.MapChipIDField_Width);
+		Debug.Log ("Height:"+mp.MapChipIDField_Height);
 	}
 	
 	// Update is called once per frame

@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 [DataContract]
-public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
+public class MapBuildingScript : /*MonoBehaviour,*/ IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
 {
     [IgnoreDataMember]
     public MapControllScript Parent { get; set; }//このスクリプトを管理するMapController
@@ -159,7 +159,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             for (int j = 0; j < MapChipIDField_Height; j++)
             {
-                MapChipField.field[i][j] = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();                
+               // MapChipField.field[i][j] = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();                
             }
         }
         ApplyInfoToMapChip();
@@ -168,8 +168,8 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
     {
-        Parent = transform.parent.GetComponent<MapControllScript>();
-        transform.position = Origin.ToVector3();
+       // Parent = transform.parent.GetComponent<MapControllScript>();
+       // transform.position = Origin.ToVector3();
         if (!(MapChipField != null))
         {
             InstantiateMapChip();

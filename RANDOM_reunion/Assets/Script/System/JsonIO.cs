@@ -20,8 +20,9 @@ public static class JsonIO
                 jsonSerializer.WriteObject(exportResultStream.BaseStream, obj);//exportして書き込み
             }
         }
-        catch
+		catch(Exception e)
         {
+			Debug.LogAssertion ($"{e.Message}///JsonExport");
             return false;//あらゆる例外に対してfalseを返す
         }
         return true;
@@ -55,29 +56,34 @@ public static class JsonIO
 
             MapBuildingScript exportMapBuilding = new MapBuildingScript();//一時保存用のMapBuildingScript
 
-            exportMapBuilding.BuildingName = tiledData.Layers[0].Name;
-            exportMapBuilding.Status = "Default";
-            
-            exportMapBuilding.MapChipIDField = new Field2D<int>();
+            exportMapBuilding.BuildingName = tiledData.Layers[0].Name;//BuildingNameにLayer0の名前を代入
+            exportMapBuilding.Status = "Default";//StatusはDefaultに
 
             int height = tiledData.Height,//マップデータの縦幅
                 width  = tiledData.Width; //　　　〃　　　横幅
-            int minH = 0, maxH = height,//0でないデータのうち、最も上/下にあるデータの位置
-                minW = 0, maxW = width; //          〃           左/右      〃     位置
+            int minH = height-1, maxH = 0,//0でないデータのうち、最も上/下にあるデータの位置
+                minW = width-1, maxW = 0; //          〃           左/右      〃     位置
+
+			exportMapBuilding.MapChipIDField = new Field2D<int>(width,height);
 
             for(int i=0;i<height;i++){
                 for(int j=0;j<width;j++){
-                    exportMapBuilding.MapChipIDField.field[i][j] = tiledData.Layers[0].Data[i*width+j];
-                    if(tiledData.Layers[0].Data[i*width+j]!=0){
-                        minH = Math.Min(minH,i);
-                        maxH = Math.Max(maxH,j);
-                        minW = Math.Min(minW,i);
-                        maxW = Math.Max(maxW,j);
-                    }
+					long data=tiledData.Layers[0].Data[i*width+j];
+					if(data <=Int32.MaxValue){
+						exportMapBuilding.MapChipIDField.field[j][i] = (int)data;
+						if(data!=0){
+							minH = Math.Min(minH,i);
+							maxH = Math.Max(maxH,j);
+							minW = Math.Min(minW,i);
+							maxW = Math.Max(maxW,j);
+						}
+					}else{
+						exportMapBuilding.MapChipIDField.field[j][i] = -1;
+					}
                 }
             }
 
-            exportMapBuilding.MapChipIDField_Height = maxH-minW+1;//端にある0の行を無視した時のマップの縦幅
+            exportMapBuilding.MapChipIDField_Height = maxH-minH+1;//端にある0の行を無視した時のマップの縦幅
             exportMapBuilding.MapChipIDField_Width  = maxW-minW+1;//　　〃　　 列        〃          横幅
             
             exportMapBuilding.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
@@ -86,7 +92,7 @@ public static class JsonIO
         }
         catch(Exception e)
         {
-            Debug.LogAssertion($"JsonIO.JsonExportFromTiled()内で{Application.dataPath}/sample.jsonを読み込もうとした際に例外が発生.");
+			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{Application.dataPath}/sample.jsonを読み込もうとした際に例外が発生.");
             return false;//あらゆる例外に対してdefaultを返す
         }
         return true;
