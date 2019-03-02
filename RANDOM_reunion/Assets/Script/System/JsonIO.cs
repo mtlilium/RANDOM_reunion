@@ -52,7 +52,9 @@ public static class JsonIO
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
 
-            tiledData=JsonImport<TileMapData>(Application.dataPath,"sample");//tiledのデータを読み込む
+			String importPath=Application.dataPath;
+			String importFileName="";
+            tiledData=JsonImport<TileMapData>(importpath,importFileName);//tiledのデータを読み込む
 
             MapBuildingScript exportMapBuilding = new MapBuildingScript();//一時保存用のMapBuildingScript
 
