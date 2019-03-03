@@ -101,8 +101,8 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
 
         if (MapSurface == null)
         {
-            MapSurface = new GameObject().AddComponent<MapBuildingScript>();
-            MapSurface.transform.parent = transform;
+      //      MapSurface = new GameObject().AddComponent<MapBuildingScript>();
+      //      MapSurface.transform.parent = transform;
         }
 
         MapSurface.JsonImport(DirectoryPath + "/" + "Surface", "Default");
@@ -114,10 +114,10 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             if (Buildings[b] == null)
             {
-                Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
+            //    Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
             }
 
-            Buildings[b].transform.parent = transform;
+          //  Buildings[b].transform.parent = transform;
             Buildings[b].JsonImport(DirectoryPath + "/" + b, "Default");
         }
     }
