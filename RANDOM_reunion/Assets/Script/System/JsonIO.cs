@@ -46,15 +46,28 @@ public static class JsonIO
         
         return importResultObj;
     }
-    public static bool JsonExportFromTiled(string path,string name)//tiled(エディタ)のJsonデータをMapBuildingScriptに置き換えてJsonにExport
+    public static bool JsonExportFromTiled(string importname)//tiled(エディタ)のJsonデータをMapBuildingScriptに置き換えてJsonにExport
     {
+        //Import元はTiledDataで統一する.
+        //Exportについて,ファイルを"_"で区切り,最後をファイル名,それ以外をディレクトリ名として処理する.
+        //
+        //例: AAA_BBB_CCC.json -> (Application.dataPath)/AAA/BBB/CCC.json
+        string[] splittedName = importname.Split('_');
+        Queue<string> q = new Queue<string>();
+        for (int i = 0; i < splittedName.Length - 1; i++)
+            q.Enqueue(splittedName[i]);
+        string exportFileName = splittedName[splittedName.Length - 1];
+        string exportPath = Application.dataPath;
+
+        while (q.Count > 0)
+            exportPath += $"/{q.Dequeue()}";
+
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
-
-			String importPath=Application.dataPath;
-			String importFileName="";
-            tiledData=JsonImport<TileMapData>(importpath,importFileName);//tiledのデータを読み込む
+            string importPath =Application.dataPath + "/TiledData";
+            string importFileName = importname;
+            tiledData=JsonImport<TileMapData>(importPath, importFileName);//tiledのデータを読み込む
 
             MapBuildingScript exportMapBuilding = new MapBuildingScript();//一時保存用のMapBuildingScript
 
@@ -90,13 +103,20 @@ public static class JsonIO
             
             exportMapBuilding.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
 
-            return JsonExport(exportMapBuilding,path,name);
+            return JsonExport(exportMapBuilding, exportPath, exportFileName);
         }
         catch(Exception e)
         {
 			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{Application.dataPath}/sample.jsonを読み込もうとした際に例外が発生.");
             return false;//あらゆる例外に対してdefaultを返す
         }
-        return true;
+    }
+    public static void TiledJsonConvert()
+    {
+        string tiledPath = Application.dataPath + "/TiledData";
+        string[] fileList = Directory.GetFiles(tiledPath, "*.json");
+
+        foreach (var i in fileList) 
+            JsonExportFromTiled(Path.GetFileNameWithoutExtension(Path.GetFileName(tiledPath)));
     }
 }

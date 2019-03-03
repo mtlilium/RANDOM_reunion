@@ -6,18 +6,13 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using UnityEngine;
 
-[DataContract]
-public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject {
-    [DataMember]
+public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject {
     public string MapName { get; private set; }//マップ名
-
-    [DataMember]
+    
     public string[] BuildingName { get; private set; }//マップ内の建物名
-
-    [IgnoreDataMember]
+    
     public MapBuildingScript MapSurface;//地表を取り扱うMapObject. 他のあらゆるMapObjectよりも奥で描写する.
-
-    [IgnoreDataMember]
+    
     public Dictionary<string, MapBuildingScript> Buildings;//キー: 建物名, 値: 対応するMapBuildingScriptとする.
 
     //IJsonSaveLoadable
@@ -33,7 +28,7 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             Directory.CreateDirectory(path);
         }
-        return JsonIO.JsonExport(this, path, name);
+        return JsonIO.JsonExport(new MapControllScriptForSerialization(this), path, name);
     }
     public bool JsonImport(string path, string name)
     {
@@ -42,7 +37,7 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             return false;
         }
-        MapControllScript mcs = JsonIO.JsonImport<MapControllScript>(path, name);
+        MapControllScript mcs = JsonIO.JsonImport<MapControllScriptForSerialization>(path, name).Export();
 
         MapName = mcs?.MapName;
         BuildingName = mcs?.BuildingName;
@@ -101,8 +96,8 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
 
         if (MapSurface == null)
         {
-      //      MapSurface = new GameObject().AddComponent<MapBuildingScript>();
-      //      MapSurface.transform.parent = transform;
+            MapSurface = new GameObject().AddComponent<MapBuildingScript>();
+            MapSurface.transform.parent = transform;
         }
 
         MapSurface.JsonImport(DirectoryPath + "/" + "Surface", "Default");
@@ -114,10 +109,10 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             if (Buildings[b] == null)
             {
-            //    Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
+                Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
             }
 
-          //  Buildings[b].transform.parent = transform;
+            Buildings[b].transform.parent = transform;
             Buildings[b].JsonImport(DirectoryPath + "/" + b, "Default");
         }
     }
@@ -137,4 +132,48 @@ public class MapControllScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
 		}
 		Initialize (mapname);
 	}
+
+    [DataContract]
+    public class MapControllScriptForSerialization : IForJsonSerialization<MapControllScript>
+    {
+        [DataMember]
+        public string MapName { get; private set; }//マップ名
+
+        [DataMember]
+        public string[] BuildingName { get; private set; }//マップ内の建物名
+
+        public MapControllScriptForSerialization() { }
+        public MapControllScriptForSerialization(MapControllScript obj)
+        {
+            MapName = obj.MapName;
+            BuildingName = obj.BuildingName;
+        }
+
+        public MapControllScript Export()
+        {
+            MapControllScript obj = new MapControllScript();
+            try
+            {
+                obj.MapName = MapName;
+                obj.BuildingName = BuildingName;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return default(MapControllScript);
+            }
+            return obj;
+        }
+        public void Export(ref MapControllScript obj)
+        {
+            obj.MapName = MapName;
+            obj.BuildingName = BuildingName;
+        }
+        public void Import(MapControllScript obj)
+        {
+            obj = new MapControllScript();
+            MapName = obj.MapName;
+            BuildingName = obj.BuildingName;
+        }
+    }
 }

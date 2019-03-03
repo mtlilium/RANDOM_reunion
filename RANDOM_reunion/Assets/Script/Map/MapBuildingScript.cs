@@ -6,34 +6,24 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using UnityEngine;
 
-[DataContract]
-public class MapBuildingScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
+public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject
 {
-    [IgnoreDataMember]
     public MapControllScript Parent { get; set; }//このスクリプトを管理するMapController
-
-    [DataMember]
+    
     public MapCoordinate Origin;//マップ座標系での基準点.MapController の MapSurface に充てられている場合は(X,Y)=(0,0)とすること.
-
-    [DataMember]
+    
     public string BuildingName;//建物などの名前(House1など)
-
-    [DataMember]
+    
     public string Status;//建物の状況名(DefaultやUnderconstructionなど)
     
-    [DataMember]
     public int MapChipIDField_Width { get; set; } = 0;//マップチップIDの管理フィールドの横の大きさ(建物の横の大きさ)
-
-    [DataMember]
+    
     public int MapChipIDField_Height { get; set; } = 0;//マップチップID管理フィールドの縦の大きさ(建物の縦の大きさ)
-
-    [DataMember]
+    
     public Field2D<int> MapChipIDField;//マップチップIDの管理フィールド
-
-    [DataMember]
+    
     public Field2D<bool> CollisionField;//マップチップの衝突判定の管理フィールド
-
-    [IgnoreDataMember]
+    
     public Field2D<MapChipScript> MapChipField;//マップチップの管理
 
     public bool ApplyInfoToMapChip()//自身の持つマップチップ情報を子のマップチップに適用
@@ -76,7 +66,7 @@ public class MapBuildingScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             Directory.CreateDirectory(path);
         }
-        return JsonIO.JsonExport(this, path, name);
+        return JsonIO.JsonExport(new MapBuildingScriptForSerialization(this), path, name);
     }
     public bool JsonImport(string path, string name)
     {
@@ -85,7 +75,7 @@ public class MapBuildingScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
         {
             return false;
         }
-        MapBuildingScript scr = JsonIO.JsonImport<MapBuildingScript>(path, name);
+        MapBuildingScript scr = JsonIO.JsonImport<MapBuildingScriptForSerialization>(path, name).Export();
 
         Origin = scr.Origin;
         BuildingName = scr.BuildingName;
@@ -175,5 +165,70 @@ public class MapBuildingScript : IJsonSaveLoadable, IJsonTemporarySaveLoadable, 
             InstantiateMapChip();
         }
         MapChipField.Foreach (x => x.Refresh());
+    }
+
+    [DataContract]
+    public class MapBuildingScriptForSerialization : IForJsonSerialization<MapBuildingScript>
+    {
+        public MapCoordinate Origin;
+        public string BuildingName;
+        public string Status;
+        public int MapChipIDField_Width;
+        public int MapChipIDField_Height;
+        public Field2D<int> MapChipIDField;
+        public Field2D<bool> CollisionField;
+
+        public MapBuildingScriptForSerialization() { }
+        public MapBuildingScriptForSerialization(MapBuildingScript obj)
+        {
+            Origin = obj.Origin;
+            BuildingName = obj.BuildingName;
+            Status = obj.Status;
+            MapChipIDField_Width = obj.MapChipIDField_Width;
+            MapChipIDField_Height = obj.MapChipIDField_Height;
+            MapChipIDField = obj.MapChipIDField;
+            CollisionField = obj.CollisionField;
+        }
+
+        public MapBuildingScript Export()
+        {
+            MapBuildingScript obj = new MapBuildingScript();
+            try
+            {
+                obj.Origin = Origin;
+                obj.BuildingName = BuildingName;
+                obj.Status = Status;
+                obj.MapChipIDField_Width = MapChipIDField_Width;
+                obj.MapChipIDField_Height = MapChipIDField_Height;
+                obj.MapChipIDField = MapChipIDField;
+                obj.CollisionField = CollisionField;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return default(MapBuildingScript);
+            }
+            return obj;
+        }
+        public void Export(ref MapBuildingScript obj)
+        {
+            obj.Origin = Origin;
+            obj.BuildingName = BuildingName;
+            obj.Status = Status;
+            obj.MapChipIDField_Width = MapChipIDField_Width;
+            obj.MapChipIDField_Height = MapChipIDField_Height;
+            obj.MapChipIDField = MapChipIDField;
+            obj.CollisionField = CollisionField;
+        }
+        public void Import(MapBuildingScript obj)
+        {
+            Origin = obj.Origin;
+            BuildingName = obj.BuildingName;
+            Status = obj.Status;
+            MapChipIDField_Width = obj.MapChipIDField_Width;
+            MapChipIDField_Height = obj.MapChipIDField_Height;
+            MapChipIDField = obj.MapChipIDField;
+            CollisionField = obj.CollisionField;
+        }
     }
 }

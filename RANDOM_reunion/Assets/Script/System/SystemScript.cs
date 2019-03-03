@@ -17,7 +17,9 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
         string DirectoryPath = Application.dataPath + "/Data";
         JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json");
         SystemVariables.CopiedFrom(this);
+        JsonIO.TiledJsonConvert();
     }//Awake時にシステム関係(アイテム情報やマップチップ情報など)をロードして,SystemVariable.Initialize(this)で適用する.
+    
 
     //IJsonSaveLoadInitializable
     public bool JsonExport(string path, string name, bool overwrite)
