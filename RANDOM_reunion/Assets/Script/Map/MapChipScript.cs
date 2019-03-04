@@ -7,8 +7,8 @@ using UnityEngine;
 
 [DataContract]
 public class MapChipScript : MonoBehaviour , IVisibleObject {
-    public static int CHIP_WIDTH = 1;//マップチップ間の横の大きさ(空白だとエラーのため適当に1にしています.要修正)
-    public static int CHIP_HEIGHT = 1;//マップチップ間の縦の大きさ(空白だとエラーのため適当に1にしています.要修正)
+    public static int CHIP_WIDTH = 64;//マップチップ間の横の大きさ(空白だとエラーのため適当に1にしています.要修正)
+    public static int CHIP_HEIGHT = 32;//マップチップ間の縦の大きさ(空白だとエラーのため適当に1にしています.要修正)
 
     [IgnoreDataMember]
     public MapBuildingScript Parent { get; set; }//このスクリプトを管理するMapObjectScript

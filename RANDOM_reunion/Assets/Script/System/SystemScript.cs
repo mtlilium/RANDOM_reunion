@@ -12,14 +12,21 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     public Sprite[] SpriteList;//スプライトのリスト
     [IgnoreDataMember]
     public GameObject MapChipPrefab;//マップチップのプレハブ
+    
+    [DataMember]
+    public string InitialMapName = "MapDemo";//初期にロードするマップ名
 
     void Awake() {
         string DirectoryPath = Application.dataPath + "/Data";
-        JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json");
+        //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
         SystemVariables.CopiedFrom(this);
         JsonIO.TiledJsonConvert();
     }//Awake時にシステム関係(アイテム情報やマップチップ情報など)をロードして,SystemVariable.Initialize(this)で適用する.
     
+    void Start()
+    {
+        Initialize(InitialMapName);
+    }
 
     //IJsonSaveLoadInitializable
     public bool JsonExport(string path, string name, bool overwrite)
@@ -73,13 +80,11 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
 
     //IJsonInitializable
     public void Initialize(string mapname) {
-        DirectoryInfo di = new DirectoryInfo(Application.dataPath + "Data/Building/" + mapname );
-        DirectoryInfo[] diarr = di.GetDirectories();
-        foreach (DirectoryInfo dri in diarr)
-        {
-            string DirectoryPath = Application.dataPath + "/Data/Building/" + mapname +"/"+dri.Name;
-            string name = "Default,json";
-            JsonIO.JsonImport<SystemScript>(DirectoryPath, name);
-        }
+
+        MapControllScript mcs = GetComponent<MapControllScript>();
+        if (mcs == null)
+            mcs = gameObject.AddComponent<MapControllScript>();
+        mcs.Initialize(mapname);
+
     } //マップ名を引数にとり,対応するディレクトリからDefault.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
 }

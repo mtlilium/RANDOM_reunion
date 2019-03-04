@@ -39,4 +39,24 @@ public class Field2D<T>//単純な2次元フィールド
             }
         }
     }
+
+    public override string ToString()
+    {
+        string str = "[";
+        for (int i = 0; i < X; i++)
+        {
+            str += '[';
+            for (int j = 0; j < Y; j++)
+            {
+                str += field[i][j].ToString();
+                if (j + 1 != Y)
+                    str += ',';
+            }
+            str += ']';
+            if (i + 1 != X)
+                str += ',';
+        }
+        str += ']';
+        return str;
+    }
 }

@@ -9,7 +9,7 @@ using UnityEngine;
 public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporarySaveLoadable, IJsonInitializable, IVisibleObject {
     public string MapName { get; private set; }//マップ名
     
-    public string[] BuildingName { get; private set; }//マップ内の建物名
+    public List<string> BuildingName { get; private set; }//マップ内の建物名
     
     public MapBuildingScript MapSurface;//地表を取り扱うMapObject. 他のあらゆるMapObjectよりも奥で描写する.
     
@@ -28,7 +28,13 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             Directory.CreateDirectory(path);
         }
-        return JsonIO.JsonExport(new MapControllScriptForSerialization(this), path, name);
+
+        MapControllScriptForSerialization mcss = new MapControllScriptForSerialization();
+
+        mcss.MapName = MapName;
+        mcss.BuildingName = BuildingName;
+
+        return JsonIO.JsonExport(mcss, path, name);
     }
     public bool JsonImport(string path, string name)
     {
@@ -37,10 +43,10 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             return false;
         }
-        MapControllScript mcs = JsonIO.JsonImport<MapControllScriptForSerialization>(path, name).Export();
+        MapControllScriptForSerialization mcss = JsonIO.JsonImport<MapControllScriptForSerialization>(path, name);
 
-        MapName = mcs?.MapName;
-        BuildingName = mcs?.BuildingName;
+        MapName = mcss.MapName;
+        BuildingName = mcss.BuildingName;
 
         return true;
     }
@@ -89,32 +95,44 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     }
 
     //IJsonInitializable
-    public void Initialize(string mapname) //マップ名を引数にとり,対応するディレクトリからInitial.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
+    public void Initialize(string mapname) //マップ名を引数にとり,対応するディレクトリからDefault.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
     {
         MapName = mapname;
-        string DirectoryPath = "Data/Building/" + MapName;
 
-        if (MapSurface == null)
+        if (MapSurface != null)
+            Destroy(MapSurface.gameObject);
+
+        if (Buildings != null)
         {
-            MapSurface = new GameObject().AddComponent<MapBuildingScript>();
-            MapSurface.transform.parent = transform;
+            foreach(var i in Buildings)
+                Destroy(i.Value.gameObject);
         }
+        Buildings = new Dictionary<string, MapBuildingScript>();
+        BuildingName = new List<string>();
 
-        MapSurface.JsonImport(DirectoryPath + "/" + "Surface", "Default");
+        string mapPath = Application.dataPath + "/Data/Building/" + mapname;
 
-        if (Buildings == null)
-            Buildings = new Dictionary<string, MapBuildingScript>();
+        DirectoryInfo[] subdirs = new DirectoryInfo(mapPath).GetDirectories();
+        foreach (DirectoryInfo dri in subdirs)
+        {            
+            string directoryPath = mapPath +"/"+ dri.Name;
 
-        foreach (var b in BuildingName)
-        {
-            if (Buildings[b] == null)
+            if (dri.Name == "Surface")
             {
-                Buildings.Add(b, new GameObject().AddComponent<MapBuildingScript>());
+                MapSurface = new GameObject().AddComponent<MapBuildingScript>();
+                MapSurface.transform.parent = transform;
+                MapSurface.Initialize("Surface");
             }
-
-            Buildings[b].transform.parent = transform;
-            Buildings[b].JsonImport(DirectoryPath + "/" + b, "Default");
+            else
+            {
+                MapBuildingScript structure = new GameObject().AddComponent<MapBuildingScript>();
+                structure.transform.parent = transform;
+                Buildings.Add(dri.Name, structure);
+                BuildingName.Add(dri.Name);
+                structure.Initialize(dri.Name);
+            }            
         }
+        Refresh();
     }
     //IVisibleObject
     public void Refresh()//メンバもRefresh()を持っていれば再帰的に適用する.
@@ -134,46 +152,14 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 	}
 
     [DataContract]
-    public class MapControllScriptForSerialization : IForJsonSerialization<MapControllScript>
+    public class MapControllScriptForSerialization
     {
         [DataMember]
-        public string MapName { get; private set; }//マップ名
+        public string MapName;//マップ名
 
         [DataMember]
-        public string[] BuildingName { get; private set; }//マップ内の建物名
+        public List<string> BuildingName;//マップ内の建物名
 
         public MapControllScriptForSerialization() { }
-        public MapControllScriptForSerialization(MapControllScript obj)
-        {
-            MapName = obj.MapName;
-            BuildingName = obj.BuildingName;
-        }
-
-        public MapControllScript Export()
-        {
-            MapControllScript obj = new MapControllScript();
-            try
-            {
-                obj.MapName = MapName;
-                obj.BuildingName = BuildingName;
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.Message);
-                return default(MapControllScript);
-            }
-            return obj;
-        }
-        public void Export(ref MapControllScript obj)
-        {
-            obj.MapName = MapName;
-            obj.BuildingName = BuildingName;
-        }
-        public void Import(MapControllScript obj)
-        {
-            obj = new MapControllScript();
-            MapName = obj.MapName;
-            BuildingName = obj.BuildingName;
-        }
     }
 }

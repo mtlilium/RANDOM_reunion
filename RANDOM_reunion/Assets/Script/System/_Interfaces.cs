@@ -46,10 +46,3 @@ interface IJsonInitializable : IJsonI
 interface IVisibleObject{//見えるもの(マップチップなど)に付与するインターフェース.
     void Refresh();//自分の持つデータからSpriteやTransform等を設定する.
 }
-
-interface IForJsonSerialization<T>
-{//Jsonでのシリアル化のために利用するクラスに付与するインターフェース.
-    T Export();//自身をTに変換する関数.失敗の場合はdefault(T)を返すこと
-    void Export(ref T obj);//自身をTに変換する関数.
-    void Import(T obj);//自身にTにから変換する関数.
-}
