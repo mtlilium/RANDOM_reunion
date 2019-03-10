@@ -63,7 +63,9 @@ public static class JsonIO
 
         while (q.Count > 0)
             exportPath += $"/{q.Dequeue()}";
-        
+
+        if (File.Exists(exportPath + "/" + exportFileName + ".json"))//上書きは禁止とする
+            return false;
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
@@ -104,7 +106,7 @@ public static class JsonIO
             exportMapBuildingScriptForSerialization.MapChipIDField_Width  = maxW-minW+1;//　　〃　　 列        〃          横幅
 
             exportMapBuildingScriptForSerialization.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
-
+            
             return JsonExport(exportMapBuildingScriptForSerialization, exportPath, exportFileName);
         }
         catch(Exception e)
