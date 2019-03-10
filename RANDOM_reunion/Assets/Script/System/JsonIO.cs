@@ -51,21 +51,13 @@ public static class JsonIO
     public static bool JsonExportFromTiled(string importname)//tiled(エディタ)のJsonデータをMapBuildingScriptに置き換えてJsonにExport
     {
         //Import元はTiledDataで統一する.
-        //Exportについて,ファイルを"_"で区切り,最後をファイル名,それ以外をディレクトリ名として処理する.
+        //Exportについて,ファイルを'_'で区切り,前とレイヤー名をディレクトリ名,後ろをファイル名として処理する.
         //
-        //例: AAA_BBB_CCC.json -> (Application.dataPath)/Data/Building/AAA/BBB/CCC.json
+        //例: AAA_BBB.json -> (Application.dataPath)/Data/Building/AAA/(各レイヤー名)/BBB.json
         string[] splittedName = importname.Split('_');
-        Queue<string> q = new Queue<string>();
-        for (int i = 0; i < splittedName.Length - 1; i++)
-            q.Enqueue(splittedName[i]);
-        string exportFileName = splittedName[splittedName.Length - 1];
-        string exportPath = Application.dataPath + "/Data/Building";
-
-        while (q.Count > 0)
-            exportPath += $"/{q.Dequeue()}";
-
-        if (File.Exists(exportPath + "/" + exportFileName + ".json"))//上書きは禁止とする
-            return false;
+        string header = splittedName[0];
+        string footer = splittedName[1];
+        
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
@@ -76,7 +68,7 @@ public static class JsonIO
             MapBuildingScript.MapBuildingScriptForSerialization exportMapBuildingScriptForSerialization = new MapBuildingScript.MapBuildingScriptForSerialization();//一時保存用のMapBuildingScript.MapBuildingScriptForSerialization
 
             exportMapBuildingScriptForSerialization.BuildingName = tiledData.Layers[0].Name;//BuildingNameにLayer0の名前を代入
-            exportMapBuildingScriptForSerialization.Status = "Default";//StatusはDefaultに
+            exportMapBuildingScriptForSerialization.Status = footer;
 
             int height = tiledData.Height,//マップデータの縦幅
                 width  = tiledData.Width; //　　　〃　　　横幅
@@ -107,7 +99,7 @@ public static class JsonIO
 
             exportMapBuildingScriptForSerialization.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
             
-            return JsonExport(exportMapBuildingScriptForSerialization, exportPath, exportFileName);
+            return JsonExport(exportMapBuildingScriptForSerialization, Application.dataPath +"/Data/Building/" + header + "/" + tiledData.Layers[0].Name,footer);
         }
         catch(Exception e)
         {
