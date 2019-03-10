@@ -188,7 +188,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         }
         MapChipField.Foreach (x => x.Refresh());
     }
-
+    
     [DataContract]
     public class MapBuildingScriptForSerialization
     {
