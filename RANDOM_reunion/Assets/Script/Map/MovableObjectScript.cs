@@ -11,6 +11,15 @@ public class MovableObjectScript : MonoBehaviour
 
     float movement = 1;
 
+    public Sprite Sprite_Up        = null;
+    public Sprite Sprite_UpLeft    = null;
+    public Sprite Sprite_UpRight   = null;
+    public Sprite Sprite_Left      = null;
+    public Sprite Sprite_Right     = null;
+    public Sprite Sprite_Down      = null;
+    public Sprite Sprite_DownLeft  = null;
+    public Sprite Sprite_DownRight = null;
+
     public void Move(Vector2 direction)//引数の方向に移動に移動量movementだけ移動
     {
         rb2d.MovePosition(rb2d.position + direction.normalized * movement);
