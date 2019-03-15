@@ -77,23 +77,23 @@ public class MovableObjectScript : MonoBehaviour
 		if (y > 0) {
 			if (x == 0) {
 				state = "Up";
-			} else if (x > 0) {
-				state = "UpLeft";
 			} else if (x < 0) {
+				state = "UpLeft";
+			} else if (x > 0) {
 				state = "UpRight";
 			}
 		} else if (y == 0) {
-			if (x > 0) {
+			if (x < 0) {
 				state = "Left";
-			} else if (x < 0) {
+			} else if (x > 0) {
 				state = "Right";
 			}
 		} else if (y < 0) {
 			if (x == 0) {
 				state = "Down";
-			} else if (x > 0) {
-				state = "DownLeft";
 			} else if (x < 0) {
+				state = "DownLeft";
+			} else if (x > 0) {
 				state = "DownRight";
 			}
 		}
