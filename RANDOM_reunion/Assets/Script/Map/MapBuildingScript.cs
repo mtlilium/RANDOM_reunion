@@ -110,7 +110,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     }
     public bool SaveAs(string savename, bool overwrite)
     {
-		string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+		string DirectoryPath = SystemVariables.RootPath + "Save/" + savename + "/" + Parent.MapName;
         if(!JsonExport(DirectoryPath, BuildingName, overwrite))
         {
             Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
@@ -120,7 +120,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     }
     public bool LoadFrom(string savename)
     {
-        string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + Parent.MapName;
+        string DirectoryPath = SystemVariables.RootPath + "Save/" + savename + "/" + Parent.MapName;
         if (!JsonImport(DirectoryPath, BuildingName))
         {
             Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
@@ -132,7 +132,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()
     {
-		string DirectoryPath = Application.dataPath + "Temporary/" + Parent.MapName;
+		string DirectoryPath = SystemVariables.RootPath + "Temporary/" + Parent.MapName;
         if (!JsonExport(DirectoryPath, BuildingName, true))
         {
             Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
@@ -155,7 +155,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     public void Initialize(string buildingname) //建物名を引数にとり,対応するディレクトリからDefault.jsonを読み込み,Status,ChipFieldに適用する.またbuildingnameも変える.
     {
         Parent = transform.parent.GetComponent<MapControllScript>();
-        string DirectoryPath = Application.dataPath + "/Data/Building/" + Parent.MapName + "/" + buildingname;
+        string DirectoryPath = SystemVariables.RootPath + "/Data/Building/" + Parent.MapName + "/" + buildingname;
         BuildingName = buildingname;
         JsonImport(DirectoryPath, "Default");
         InstantiateMapChip();
