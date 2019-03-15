@@ -53,7 +53,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 
     public bool SaveAs(string savename, bool overwrite)
     {
-        string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + MapName;
+        string DirectoryPath = SystemVariables.RootPath + "Save/" + savename + "/" + MapName;
         if (!JsonExport(DirectoryPath, MapName, overwrite))
         {
             Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
@@ -63,7 +63,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     }
     public bool LoadFrom(string savename)
     {
-        string DirectoryPath = Application.dataPath + "Save/" + savename + "/" + MapName;
+        string DirectoryPath = SystemVariables.RootPath + "Save/" + savename + "/" + MapName;
         if (!JsonImport(DirectoryPath, MapName))
         {
             Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
@@ -75,7 +75,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     //IJsonTemporarySaveLoadable
     public bool SaveTemporary()
     {
-		string DirectoryPath = Application.dataPath + "Temporary/" + MapName;
+		string DirectoryPath = SystemVariables.RootPath + "Temporary/" + MapName;
         if (!JsonExport(DirectoryPath, MapName, true))
         {
             Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
@@ -110,7 +110,7 @@ public class MapControllScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         Buildings = new Dictionary<string, MapBuildingScript>();
         BuildingName = new List<string>();
 
-        string mapPath = Application.dataPath + "/Data/Building/" + mapname;
+        string mapPath = SystemVariables.RootPath + "/Data/Building/" + mapname;
 
         DirectoryInfo[] subdirs = new DirectoryInfo(mapPath).GetDirectories();
         foreach (DirectoryInfo dri in subdirs)

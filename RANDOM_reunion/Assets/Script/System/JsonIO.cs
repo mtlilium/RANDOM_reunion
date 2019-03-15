@@ -53,7 +53,7 @@ public static class JsonIO
         //Import元はTiledDataで統一する.
         //Exportについて,ファイルを'_'で区切り,前とレイヤー名をディレクトリ名,後ろをファイル名として処理する.
         //
-        //例: AAA_BBB.json -> (Application.dataPath)/Data/Building/AAA/(各レイヤー名)/BBB.json
+        //例: AAA_BBB.json -> (SystemVariables.RootPath)/Data/Building/AAA/(各レイヤー名)/BBB.json
         string[] splittedName = importname.Split('_');
         string header = splittedName[0];
         string footer = splittedName[1];
@@ -61,7 +61,7 @@ public static class JsonIO
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
-            string importPath =Application.dataPath + "/TiledData";
+            string importPath =SystemVariables.RootPath + "/TiledData";
             string importFileName = importname;
             tiledData=JsonImport<TileMapData>(importPath, importFileName);//tiledのデータを読み込む
 
@@ -99,17 +99,17 @@ public static class JsonIO
 
             exportMapBuildingScriptForSerialization.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
             
-            return JsonExport(exportMapBuildingScriptForSerialization, Application.dataPath +"/Data/Building/" + header + "/" + tiledData.Layers[0].Name,footer);
+            return JsonExport(exportMapBuildingScriptForSerialization, SystemVariables.RootPath +"/Data/Building/" + header + "/" + tiledData.Layers[0].Name,footer);
         }
         catch(Exception e)
         {
-			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{Application.dataPath}/sample.jsonを読み込もうとした際に例外が発生.");
+			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{SystemVariables.RootPath}/sample.jsonを読み込もうとした際に例外が発生.");
             return false;//あらゆる例外に対してdefaultを返す
         }
     }
     public static void TiledJsonConvert()
     {
-        string tiledPath = Application.dataPath + "/TiledData";
+        string tiledPath = SystemVariables.RootPath + "/TiledData";
         string[] fileList = Directory.GetFiles(tiledPath, "*.json");
 
         foreach (var file in fileList)
