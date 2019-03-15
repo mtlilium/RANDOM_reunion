@@ -90,7 +90,7 @@ public static class JsonIO
                                 maxW = Math.Max(maxW,j);
                             }
                         }else{
-                            exportMapBuildingScriptForSerialization.MapChipIDField.field[j][i] = -1;
+                            exportMapBuildingScriptForSerialization.MapChipIDField.field[j][i] = -1;//intの範囲に収まらない場合-1
                         }
                     }
                 }
@@ -100,11 +100,11 @@ public static class JsonIO
 
                 exportMapBuildingScriptForSerialization.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
                 
-                if(doneSuccessfully){
+                if(doneSuccessfully){//doneSuccesFullyがtrueなら更新　すでにfalseなら失敗が確定しているので更新の必要なし
                     doneSuccessfully = JsonExport(exportMapBuildingScriptForSerialization, Application.dataPath +"/Data/Building/" + header + "/" + layer.Name,footer);
                 }
             }
-            return finishedSuccessfully;
+            return doneSuccessfully;
         }
         catch(Exception e)
         {
