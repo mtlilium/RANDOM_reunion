@@ -7,23 +7,25 @@ using UnityEngine;
 
 [DataContract]
 public static class ItemInfo {
-    List<ItemProperty> ItemField;
+
+    static List<ItemProperty> ItemField;
 
     [DataMember]
-    Dictionary<string, int> ItemIDResolution;
+    static Dictionary<string, int> ItemIDResolution;
     [DataMember]
-    List<string> ItemNameResolution;
+    static List<string> ItemNameResolution;
 
-    public bool HaveAttribute(string itemname, string attribute)
+    public static bool HaveAttribute(string itemname, string attribute)
     {
 
     }
-    public bool HaveAttribute(int itemid, string attribute)
+    public static bool HaveAttribute(int itemid, string attribute)
     {
 
     }
-    public void LoadItemInfo()
+    public static void LoadItemInfo()
     {
+        string path = SystemVariables.RootPath + "/Data/Item/ItemProperty";
 
     }
 	
