@@ -8,7 +8,6 @@ using UnityEngine;
 [DataContract]
 public static class ItemInfo {
 
-    [DataMember]
     static List<ItemProperty> ItemField;//それぞれのアイテムがItemID番目に保存されると仮定した
     [DataMember]
     static Dictionary<string, int> ItemIDResolution;
