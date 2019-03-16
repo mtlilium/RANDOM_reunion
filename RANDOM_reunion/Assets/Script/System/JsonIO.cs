@@ -60,8 +60,9 @@ public static class JsonIO
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
-            string importPath =Application.dataPath + "/TiledData";
-            tiledData=JsonImport<TileMapData>(importPath, importname);//tiledのデータを読み込む
+            string importPath =SystemVariables.RootPath + "/TiledData";
+            string importFileName = importname;
+            tiledData=JsonImport<TileMapData>(importPath, importFileName);//tiledのデータを読み込む
 
             bool doneSuccessfully=true;//すべてのレイヤーをうまく読み込めればtrue
 
@@ -108,7 +109,7 @@ public static class JsonIO
         }
         catch(Exception e)
         {
-			Debug.LogAssertion($"JsonIO.JsonExportFromTiled()内で{Application.dataPath}/sample.jsonを読み込もうとした際に例外が発生.");
+			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{SystemVariables.RootPath}/sample.jsonを読み込もうとした際に例外が発生.");
             return false;//あらゆる例外に対してdefaultを返す
         }
     }
