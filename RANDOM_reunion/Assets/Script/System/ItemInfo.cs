@@ -16,8 +16,8 @@ public static class ItemInfo {
 
     public static bool HaveAttribute(string itemname, string attribute)//対象のアイテムのAttributeにattributeがあればtrue, そうでなければfalse
     {
-        int thisitemid = ItemIDResolution[itemname];
-        LinkedList<string> thisAttribute = ItemField[thisitemid].Attribute;
+        int thisItemID = ItemIDResolution[itemname];
+        LinkedList<string> thisAttribute = ItemField[thisItemID].Attribute;
 
         foreach (string att in thisAttribute)
         {
@@ -44,10 +44,18 @@ public static class ItemInfo {
     public static void LoadItemInfo()//メンバ変数の更新
     {
         string path = SystemVariables.RootPath + "/Data/Item/ItemProperty";
-        //それぞれ別のJsonファイルがあると仮定, staticなクラスはジェネリックできないため
-        ItemField = JsonIO.JsonImport<List<ItemProperty>>(path, "ItemField");
-        ItemIDResolution = JsonIO.JsonImport<Dictionary<string, int>>(path, "ItemIDResolution");
-        ItemNameResolution = JsonIO.JsonImport<List<string>>(path, "ItemNameResolution");
+        int idtemp = 0;
+        ItemProperty itemProperty;
+
+        string[] files = System.IO.Directory.GetFiles(@path, "*", System.IO.SearchOption.TopDirectoryOnly);
+        foreach(string i in files)
+        {
+            string name = System.IO.Path.GetFileNameWithoutExtension(i);
+            if (itemProperty.JsonImport(path, name))
+            {
+                ItemField.
+            }
+        }
 
 
     }
