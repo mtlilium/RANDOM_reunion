@@ -56,6 +56,8 @@ public static class ItemInfo {
 
         foreach(string i in files)//全アイテムを読み込み, ItemField, ItemIDResolution, ItemNameResolutionに追加
         {
+            if (System.IO.Path.GetExtension(i) != ".json") continue;//jsonデータ以外は読み込まない
+
             string name = System.IO.Path.GetFileNameWithoutExtension(i);
             if (itemProperty.JsonImport(path, name))
             {
