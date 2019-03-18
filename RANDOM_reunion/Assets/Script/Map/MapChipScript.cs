@@ -25,7 +25,11 @@ public class MapChipScript : MonoBehaviour , IVisibleObject {
     //IVisibleObject
     public void Refresh() {
         Parent = transform.parent.GetComponent<MapBuildingScript>();
-        GetComponent<SpriteRenderer>().sprite = SystemVariables.SpriteList?[SpriteID] ?? SystemVariables.SpriteList?[0];
+        if (0 <= SpriteID && SpriteID < SystemVariables.SpriteList.Length)
+            GetComponent<SpriteRenderer>().sprite = SystemVariables.SpriteList[SpriteID];
+        else
+            GetComponent<SpriteRenderer>().sprite = null;
+
         GetComponent<MeshCollider>().enabled = Collision;
         transform.position = Coordinate.ToVector3();
     }

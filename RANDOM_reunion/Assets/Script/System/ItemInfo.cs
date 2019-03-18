@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -15,9 +16,7 @@ public static class ItemInfo {
     static Dictionary<string, int> ItemIDResolution;
     [DataMember]
     static List<string> ItemNameResolution;
-
-    static ItemProperty itemProperty;
-
+    
     public static bool HaveAttribute(string itemname, string attribute)//対象のアイテムのAttributeリストにattributeがあればtrue, そうでなければfalse
     {
         int thisItemID = ItemIDResolution[itemname];
@@ -48,7 +47,7 @@ public static class ItemInfo {
     public static void LoadItemInfo()//メンバ変数とItemFieldの更新
     {
         string path = SystemVariables.RootPath + "/Data/Item/ItemProperty";
-        string[] files = System.IO.Directory.GetFiles(@path, "*", System.IO.SearchOption.TopDirectoryOnly);
+        string[] files = System.IO.Directory.GetFiles(@path, "*.json", System.IO.SearchOption.TopDirectoryOnly);
 
         ItemField = new List<ItemProperty>();//メンバ変数とItemFieldを空に
         ItemIDResolution = new Dictionary<string, int>();
@@ -56,10 +55,8 @@ public static class ItemInfo {
 
         foreach(string i in files)//全アイテムを読み込み, ItemField, ItemIDResolution, ItemNameResolutionに追加
         {
-            if (System.IO.Path.GetExtension(i) != ".json") continue;//jsonデータ以外は読み込まない
-
-            string name = System.IO.Path.GetFileNameWithoutExtension(i);
-            if (itemProperty.JsonImport(path, name))
+            ItemProperty itemProperty = new ItemProperty();
+            if (itemProperty.JsonImport(path, Path.GetFileNameWithoutExtension(i)))
             {
                 int idtemp = ItemIDResolution.Count;
                 ItemField.Add(itemProperty);
