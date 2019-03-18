@@ -52,7 +52,7 @@ public static class JsonIO
         //Import元はTiledDataで統一する.
         //Exportについて,ファイルを'_'で区切り,前とレイヤー名をディレクトリ名,後ろをファイル名として処理する.
         //
-        //例: AAA_BBB.json -> (Application.dataPath)/Data/Building/AAA/(各レイヤー名)/BBB.json
+        //例: AAA_BBB.json -> (SystemVariables.RootPath)/Data/Building/AAA/(各レイヤー名)/BBB.json
         string[] splittedName = importname.Split('_');
         string header = splittedName[0];
         string footer = splittedName[1];
@@ -98,7 +98,7 @@ public static class JsonIO
 
                 exportMapBuildingScriptForSerialization.MapChipIDField_Height = maxH-minH+1;//端にある0の行を無視した時のマップの縦幅
                 exportMapBuildingScriptForSerialization.MapChipIDField_Width  = maxW-minW+1;//　　〃　　 列        〃          横幅
-
+              
                 exportMapBuildingScriptForSerialization.Origin = new MapCoordinate(width-(maxW+1) , height-(maxH+1));
                 
                 if(doneSuccessfully){//doneSuccesFullyがtrueなら更新　すでにfalseなら失敗が確定しているので更新の必要なし
@@ -115,7 +115,7 @@ public static class JsonIO
     }
     public static void TiledJsonConvert()
     {
-        string tiledPath = Application.dataPath + "/TiledData";
+        string tiledPath = SystemVariables.RootPath + "/TiledData";
         string[] fileList = Directory.GetFiles(tiledPath, "*.json");
 
         foreach (var file in fileList)

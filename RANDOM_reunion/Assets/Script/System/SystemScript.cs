@@ -17,7 +17,7 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     public string InitialMapName = "MapDemo";//初期にロードするマップ名
 
     void Awake() {
-        string DirectoryPath = Application.dataPath + "/Data";
+        string DirectoryPath = SystemVariables.RootPath + "/Data";
         //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
         SystemVariables.CopiedFrom(this);
         JsonIO.TiledJsonConvert();
@@ -59,7 +59,7 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
 
     public bool SaveAs(string savename, bool overwrite)
     {
-        string DirectoryPath = Application.dataPath + "/Data/" + savename;
+        string DirectoryPath = SystemVariables.RootPath + "/Data/" + savename;
         if (!JsonExport(DirectoryPath,savename,overwrite))
         {
             Debug.LogAssertion($"{DirectoryPath}へのセーブに失敗しました");
@@ -69,7 +69,7 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     }
     public bool LoadFrom(string savename)
     {
-        string DirectoryPath = Application.dataPath + "/Data"  ;
+        string DirectoryPath = SystemVariables.RootPath + "/Data"  ;
         if (!JsonImport(DirectoryPath, savename ))
         {
             Debug.LogAssertion($"{DirectoryPath}からのロードに失敗しました");
