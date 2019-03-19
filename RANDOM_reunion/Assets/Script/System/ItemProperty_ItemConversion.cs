@@ -56,3 +56,24 @@ public class ItemConversion : IJsonI
         return true;
     }
 }
+
+ public class ItemConversionInfo
+{
+    public LinkedList<ItemConversion> RecipesItemConversionAll;
+
+    Dictionary<LinkedList<string>, LinkedList<ItemConversion>> RecipesItemConversion;
+
+    public void LoadItemConversionInfo()
+    {
+        DirectoryInfo dir = new DirectoryInfo(SystemVariables.RootPath + "/Data/Item/ItemConversion");
+        FileInfo[] info = dir.GetFiles("*.json");
+
+        foreach (FileInfo f in info)
+        {
+            string name = Path.GetFileNameWithoutExtension(f.Name);
+            ItemConversion ic = JsonIO.JsonImport<ItemConversion>(SystemVariables.RootPath + "/Data/Item/ItemConversion", name);
+            RecipesItemConversionAll.AddLast(ic);
+            RecipesItemConversion.Add(ic.Attribute, RecipesItemConversionAll);
+        }
+    }
+}
