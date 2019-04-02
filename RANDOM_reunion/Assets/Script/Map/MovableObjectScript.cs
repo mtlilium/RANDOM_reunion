@@ -10,7 +10,7 @@ public class MovableObjectScript : MonoBehaviour
     Rigidbody2D rb2d;
 	SpriteRenderer sr;
 
-    float movement = 1;
+    public float movement = 1;
 
     public Sprite Sprite_Up        = null;
     public Sprite Sprite_UpLeft    = null;
@@ -28,7 +28,7 @@ public class MovableObjectScript : MonoBehaviour
         rb2d.MovePosition(rb2d.position + direction.normalized * movement);
 
 		string tmpState = GetState (direction);
-		if (stateDic [tmpState] != null) {
+		if (stateDic?[tmpState] != null) {
 			sr.sprite = stateDic [tmpState];
 		}
     }
@@ -36,7 +36,7 @@ public class MovableObjectScript : MonoBehaviour
     {
         rb2d.MovePosition(rb2d.position + direction.normalized * q);
 		string tmpState = GetState (direction);
-		if (stateDic [tmpState] != null) {
+		if (stateDic?[tmpState] != null) {
 			sr.sprite = stateDic [tmpState];
 		}
     }
