@@ -22,6 +22,7 @@ public class ItemStorageScript : MonoBehaviour
     {
         if (Inventory.ContainsKey(itemid))
         {
+            Inventory[itemid] += quantity;
         }
         else
         {
