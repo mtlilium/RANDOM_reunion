@@ -17,6 +17,14 @@ public static class ItemInfo {
     [DataMember]
     static List<string> ItemNameResolution;
     
+    public static int GetItemID(string str)
+    {
+        if (ItemIDResolution.ContainsKey(str))
+            return ItemIDResolution[str];
+        else
+            return -1;
+    }
+
     public static bool HaveAttribute(string itemname, string attribute)//対象のアイテムのAttributeリストにattributeがあればtrue, そうでなければfalse
     {
         int thisItemID = ItemIDResolution[itemname];

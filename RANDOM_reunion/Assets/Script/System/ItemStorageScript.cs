@@ -8,14 +8,22 @@ public class ItemStorageScript : MonoBehaviour
 
     public void AddItem(string itemname, int quantity)
     {
-        int itemid =ItemInfo.ItemIDResolution;
-        if (Inventory.ContainsKey(itemid))
+        int itemid = ItemInfo.GetItemID(itemname);
+        if (itemid == -1)
         {
-            Inventory[itemid] += quantity;
+            Debug.Log("アイテム名エラー:登録されていないアイテム名です");
+            return;
         }
         else
         {
-            Inventory.Add(itemid, 1);
+            if (Inventory.ContainsKey(itemid))
+            {
+                Inventory[itemid] += quantity;
+            }
+            else
+            {
+                Inventory.Add(itemid, 1);
+            }
         }
     }
     public void AddItem(int itemid, int quantity)
@@ -31,15 +39,22 @@ public class ItemStorageScript : MonoBehaviour
     }
     public bool RemoveItem(string itemname, int quantity)
     {
-        int itemid = ItemInfo.ItemIDResolution;
-        if (Inventory.ContainsKey(itemid))
+        int itemid = ItemInfo.GetItemID(itemname);
+        if (itemid == -1)
         {
-            if (Inventory[itemid] >= quantity)
+            Debug.Log("アイテム名エラー:登録されていないアイテム名です");
+            return false;
+        }
+        else
+        {
+            if (Inventory.ContainsKey(itemid))
             {
-                Inventory[itemid] -= quantity;
-                return true;
+                if (Inventory[itemid] >= quantity)
+                {
+                    Inventory[itemid] -= quantity;
+                    return true;
+                }
             }
-
         }
         return false;
     }
