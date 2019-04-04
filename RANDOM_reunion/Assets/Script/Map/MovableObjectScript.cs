@@ -21,23 +21,36 @@ public class MovableObjectScript : MonoBehaviour
     public Sprite Sprite_DownLeft  = null;
     public Sprite Sprite_DownRight = null;
 
-	Dictionary<string, Sprite> stateDic = new Dictionary<string, Sprite>(); 
+	Dictionary<directions, Sprite> stateDic = new Dictionary<directions, Sprite>(); 
+
+	enum directions{
+		Up,
+		UpLeft,
+		UpRight,
+		Left,
+		Right,
+		Down,
+		DownLeft,
+		DownRight
+	}
+
+	directions state;
 
     public void Move(Vector2 direction)//引数の方向に移動に移動量movementだけ移動
     {
         rb2d.MovePosition(rb2d.position + direction.normalized * movement);
 
-		string tmpState = GetState (direction);
-		if (stateDic [tmpState] != null) {
-			sr.sprite = stateDic [tmpState];
+		GetState (direction);
+		if (stateDic [state] != null) {
+			sr.sprite = stateDic [state];
 		}
     }
     public void Move(Vector2 direction, float q)//引数の方向に移動量Qだけ移動
     {
         rb2d.MovePosition(rb2d.position + direction.normalized * q);
-		string tmpState = GetState (direction);
-		if (stateDic [tmpState] != null) {
-			sr.sprite = stateDic [tmpState];
+		GetState (direction);
+		if (stateDic [state] != null) {
+			sr.sprite = stateDic [state];
 		}
     }
 
@@ -52,51 +65,64 @@ public class MovableObjectScript : MonoBehaviour
 
     private void Awake()//起動時Rigidbody2Dを取得
     {
-        rb2d = gameObject.GetComponent<Rigidbody2D>();
+		InitializeOnAwake ();
+    }
+
+	protected void InitializeOnAwake(){
+		rb2d = gameObject.GetComponent<Rigidbody2D>();
 
 		//追加分0311
 		sr = gameObject.GetComponent<SpriteRenderer>();
 		//<どっちに動いているか,対応するSprite>
-		stateDic.Add ("Up", Sprite_Up);
-		stateDic.Add ("UpLeft", Sprite_UpLeft);
-		stateDic.Add ("UpRight", Sprite_UpRight);
-		stateDic.Add ("Left", Sprite_Left);
-		stateDic.Add ("Right", Sprite_Right);
-		stateDic.Add ("Down", Sprite_Down);
-		stateDic.Add ("DownLeft", Sprite_DownLeft);
-		stateDic.Add ("DownRight", Sprite_DownRight);
+		stateDic.Add (directions.Up, Sprite_Up);
+		stateDic.Add (directions.UpLeft, Sprite_UpLeft);
+		stateDic.Add (directions.UpRight, Sprite_UpRight);
+		stateDic.Add (directions.Left, Sprite_Left);
+		stateDic.Add (directions.Right, Sprite_Right);
+		stateDic.Add (directions.Down, Sprite_Down);
+		stateDic.Add (directions.DownLeft, Sprite_DownLeft);
+		stateDic.Add (directions.DownRight, Sprite_DownRight);
+		state = directions.Down;
+	}
+	private void Start(){
+		InitializeOnStart ();
+	}
 
-    }
+	protected void InitializeOnStart(){
+		sr.sprite = stateDic [state];
+		Debug.Log (state);
+	}
 
 	//0311追加分
 	//Vector2から動いてる方向を取得
-	string GetState(Vector2 direction){
+	void GetState(Vector2 direction){
 		var x = direction.x;
 		var y = direction.y;
-		string state = "Idol";
+		state = directions.Down;
 		if (y > 0) {
 			if (x == 0) {
-				state = "Up";
+				state = directions.Up;
 			} else if (x < 0) {
-				state = "UpLeft";
+				state = directions.UpLeft;
 			} else if (x > 0) {
-				state = "UpRight";
+				state = directions.UpRight;
 			}
 		} else if (y == 0) {
 			if (x < 0) {
-				state = "Left";
+				state = directions.Left;
 			} else if (x > 0) {
-				state = "Right";
+				state = directions.Right;
+			} else if (x == 0) {
+				return;
 			}
 		} else if (y < 0) {
 			if (x == 0) {
-				state = "Down";
+				state = directions.Down;
 			} else if (x < 0) {
-				state = "DownLeft";
+				state = directions.DownLeft;
 			} else if (x > 0) {
-				state = "DownRight";
+				state = directions.DownRight;
 			}
 		}
-		return state;
 	}
 }

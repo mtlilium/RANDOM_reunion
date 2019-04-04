@@ -8,8 +8,12 @@ using UnityEngine;
 
 public class PlayerOperateScript : MovableObjectScript {
 
-	void Start(){
+	void Awake(){
+		InitializeOnAwake ();
+	}
 
+	void Start(){
+		InitializeOnStart ();
 	}
 	// Update is called once per frame
 	void Update () {
@@ -27,16 +31,16 @@ public class PlayerOperateScript : MovableObjectScript {
             return false;
 		}
 		if (Input.GetKey(KeyCode.UpArrow)) {
-			c += new MapCoordinate(0, 1);
+			c += new MapCoordinate(1, 1);
         }
         if (Input.GetKey(KeyCode.DownArrow)) {
-            c -= new MapCoordinate(0, 1);
+            c -= new MapCoordinate(1, 1);
         }
         if (Input.GetKey(KeyCode.LeftArrow)) {
-            c += new MapCoordinate(1, 0);
+            c += new MapCoordinate(1, -1);
         }
         if (Input.GetKey(KeyCode.RightArrow)) {
-			c -= new MapCoordinate(1, 0);
+			c -= new MapCoordinate(1, -1);
 		} 
 		return true;
 	}
