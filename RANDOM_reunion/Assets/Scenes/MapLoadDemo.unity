@@ -218,6 +218,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpriteList:
+  - {fileID: 21300000, guid: 9cd57ec72951ed84aa56b3ef7602d015, type: 3}
+  - {fileID: 21300018, guid: 9cd57ec72951ed84aa56b3ef7602d015, type: 3}
+  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
+  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
+  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
+  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
+  - {fileID: 21300002, guid: 9cd57ec72951ed84aa56b3ef7602d015, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
@@ -234,14 +241,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
-  - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
+  - {fileID: 21300000, guid: e712da9cc93e6b546807da3b9ade0871, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
   - {fileID: 21300000, guid: 07d2a0e4461679a4da1138a3c082f869, type: 3}
