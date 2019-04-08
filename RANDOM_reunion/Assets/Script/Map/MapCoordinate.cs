@@ -40,6 +40,14 @@ public class MapCoordinate{
             ( x + y)/ (ConstOfPositionTransform / MapChipScript.CHIP_HEIGHT)
         );
     }
+    public static MapCoordinate FromVector2(Vector2 vec)//Vector2から変換
+    {
+        return new MapCoordinate(
+            (vec.y / MapChipScript.CHIP_HEIGHT - vec.x / MapChipScript.CHIP_WIDTH) * ConstOfPositionTransform / 2,
+            (vec.y / MapChipScript.CHIP_HEIGHT + vec.x / MapChipScript.CHIP_WIDTH) * ConstOfPositionTransform / 2
+            );
+    }
+
     public float Depth(){//マップチップの標準的な深さに変換
         return x + y;
     }
@@ -49,5 +57,10 @@ public class MapCoordinate{
             (x + y) / (ConstOfPositionTransform / MapChipScript.CHIP_HEIGHT),
              Depth()
         );
+    }
+
+    public new string ToString()
+    {
+        return $"{x},{y}";
     }
 }
