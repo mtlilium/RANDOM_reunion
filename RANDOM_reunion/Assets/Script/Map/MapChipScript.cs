@@ -14,7 +14,7 @@ public class MapChipScript : MonoBehaviour , IVisibleObject {
     public MapBuildingScript Parent { get; set; }//このスクリプトを管理するMapObjectScript
 
     [DataMember]
-    public int SpriteID{get;set;}//適用するスプライトのID
+    public int SpriteID;//適用するスプライトのID
     
     [DataMember]
     public bool Collision{get;set;}//衝突判定
