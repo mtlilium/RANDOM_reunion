@@ -38,12 +38,7 @@ public class MovableObjectScript : MonoBehaviour
 
     public void Move(Vector2 direction)//引数の方向に移動に移動量movementだけ移動
     {
-        rb2d.MovePosition(rb2d.position + direction.normalized * movement);
-
-		GetState (direction);
-		if (stateDic [state] != null) {
-			sr.sprite = stateDic [state];
-		}
+        Move(direction, movement);
     }
     public void Move(Vector2 direction, float q)//引数の方向に移動量Qだけ移動
     {
@@ -52,6 +47,14 @@ public class MovableObjectScript : MonoBehaviour
 		if (stateDic [state] != null) {
 			sr.sprite = stateDic [state];
 		}
+        DepthModification();
+    }
+
+    public void DepthModification()//対象の奥行きを修正
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.z = MapCoordinate.FromVector2(transform.position).Depth() - 1.5f;
+        transform.position = newPosition;
     }
 
     public void Move(MapCoordinate mapcoordinate)//MapCoordinateのToVector2の方向に移動量movementだけ移動

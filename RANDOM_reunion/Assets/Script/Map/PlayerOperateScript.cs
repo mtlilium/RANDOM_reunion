@@ -18,31 +18,33 @@ public class PlayerOperateScript : MovableObjectScript {
 	// Update is called once per frame
 	void Update () {
         MapCoordinate c;
-		if (IsInput(out c)) {
+		if (IsArrowInput(out c)) {
 			Move(c);
 		}
 	}
 
-
-	private bool IsInput(out MapCoordinate c){
+	private bool IsArrowInput(out MapCoordinate c){
         c = new MapCoordinate(0, 0);
-        if (!(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
+
+        if (Input.GetKey(KeyCode.UpArrow))
         {
-            return false;
-		}
-		if (Input.GetKey(KeyCode.UpArrow)) {
-			c += new MapCoordinate(1, 1);
+            c += new MapCoordinate(1, 1);
         }
-        if (Input.GetKey(KeyCode.DownArrow)) {
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
             c -= new MapCoordinate(1, 1);
         }
-        if (Input.GetKey(KeyCode.LeftArrow)) {
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
             c += new MapCoordinate(1, -1);
         }
-        if (Input.GetKey(KeyCode.RightArrow)) {
-			c -= new MapCoordinate(1, -1);
-		} 
-		return true;
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            c -= new MapCoordinate(1, -1);
+        }
+        if (c != new MapCoordinate(0, 0))
+            return true;
+        else
+            return false;
 	}
-
 }
