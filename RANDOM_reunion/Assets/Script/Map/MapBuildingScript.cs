@@ -10,9 +10,8 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 {
     public MapControllScript Parent { get; set; }//このスクリプトを管理するMapController
     
-	public MapCoordinate Origin = new MapCoordinate(0, 0);//マップ座標系での基準点.MapController の MapSurface に充てられている場合は(X,Y)=(0,0)とすること.
+    public MapCoordinate Origin = new MapCoordinate(0, 0);//マップ座標系での基準点.MapController の MapSurface に充てられている場合は(X,Y)=(0,0)とすること.
     
-
     private string _BuildingName;
     public string BuildingName//建物などの名前(House1など)
     {
