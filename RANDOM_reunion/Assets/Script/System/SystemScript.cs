@@ -19,9 +19,9 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     void Awake() {
         //////////////TiledTsxImporterのテスト///////////
         string importpath = SystemVariables.RootPath+"/TiledData";
-        string importTsxName = "sand";
-        TiledTsxImporter.TsxImportFromTiled(importpath,importTsxName);
-        //////////////TiledTsxImporterのテスト///////////
+        string importTsxName = "tsxReadTest";
+        Debug.Log($"source:{TiledTsxImporter.TsxImageSourceImportFromTiled(importpath,importTsxName)}");
+        ////////////////////////////////////////////////
 
         string DirectoryPath = SystemVariables.RootPath + "/Data";
         //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
