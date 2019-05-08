@@ -32,44 +32,41 @@ public static class Flags /*:MonoBehaviour*/ {
         {
             return false;
         }
-
-
-        //IJsonSaveLoadable
-        public bool JsonExport(string path, string name, bool overwrite)
-        {
-            string filePath = path + "/" + name + ".json";
-
-            if (File.Exists(filePath) && !overwrite)
-            {
-                return false;
-            }
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            FlagsForSerialization exporter = new FlagsForSerialization();
-
-            exporter.FlagField = FlagField;
-
-            return JsonIO.JsonExport(exporter, path, name);
-        }
-
-        public bool JsonImport(string path, string name)
-        {
-            string FilePath = path + "/" + name + ".json";
-            if (!File.Exists(FilePath))
-            {
-                return false;
-            }
-            FlagsForSerialization scr = JsonIO.JsonImport<FlagsForSerialization>(path, name);
-
-            FlagField = scr.FlagField;
-            return true;
-        }
-        
     }
 
+        //IJsonSaveLoadable
+    public static bool JsonExport(string path, string name, bool overwrite)
+    {
+        string filePath = path + "/" + name + ".json";
 
+        if (File.Exists(filePath) && !overwrite)
+        {
+            return false;
+        }
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        FlagsForSerialization exporter = new FlagsForSerialization();
+
+        exporter.FlagField = FlagField;
+
+        return JsonIO.JsonExport(exporter, path, name);
+    }
+
+    public static bool JsonImport(string path, string name)
+    {
+        string FilePath = path + "/" + name + ".json";
+        if (!File.Exists(FilePath))
+        {
+            return false;
+        }
+        FlagsForSerialization scr = JsonIO.JsonImport<FlagsForSerialization>(path, name);
+
+        FlagField = scr.FlagField;
+        return true;
+    }
+        
     [DataContract]
     public class FlagsForSerialization
     {
