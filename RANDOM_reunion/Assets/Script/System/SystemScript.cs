@@ -17,12 +17,29 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     public string InitialMapName = "MapDemo";//初期にロードするマップ名
 
     void Awake() {
-        //////////////TiledTsxImporterのテスト///////////
-        string importpath = SystemVariables.RootPath+"/TiledData";
-        string importTsxName = "tsxReadTest";
-        Debug.Log($"source:{TiledTsxImporter.TsxImageSourceImportFromTiled(importpath,importTsxName)}");
-        ////////////////////////////////////////////////
+        //////////////TiledTsxImportのテスト///////////
+        string jsonPath = SystemVariables.RootPath+"/TiledData";
+        string tsxPath = SystemVariables.RootPath + "/TiledData/tsx";
 
+        string importJsonName = "MapDemo_Default";
+        try
+        {
+            var importResultList = TiledTsxImport.MapchipSourceImportFromTiled(jsonPath, importJsonName, tsxPath);
+            foreach (var tp in importResultList)
+            {
+                Debug.Log($"firstgid:{tp.Item1}");
+                foreach (var source in tp.Item2)
+                {
+                    Debug.Log($"source:{source}");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogAssertion(e.Message);
+        }
+
+        ////////////////////////////////////////////////
         string DirectoryPath = SystemVariables.RootPath + "/Data";
         //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
         SystemVariables.CopiedFrom(this);
