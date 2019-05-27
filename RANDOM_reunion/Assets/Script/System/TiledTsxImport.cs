@@ -62,8 +62,8 @@ public class TiledTsxImport
         string[] ss = s.Split('/');
 
         string fileNameWithExtension = ss[ss.Length - 1];
-        //string fileName = fileNameWithExtension.Split('.')[0];
-        return fileNameWithExtension;
+        string fileName = fileNameWithExtension.Split('.')[0];
+        return fileName;
     }
     private static bool IsTerrainData(XDocument xml)
     {

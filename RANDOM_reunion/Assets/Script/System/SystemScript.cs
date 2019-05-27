@@ -17,33 +17,12 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
     public string InitialMapName = "MapDemo";//初期にロードするマップ名
 
     void Awake() {
-        //////////////TiledTsxImportのテスト///////////
-        string jsonPath = SystemVariables.RootPath+"/TiledData";
-        string tsxPath = SystemVariables.RootPath + "/TiledData/tsx";
-
-        string importJsonName = "MapDemo_Default";
-        try
-        {
-            var importResultList = TiledTsxImport.MapchipSourceImportFromTiled(jsonPath, importJsonName, tsxPath);
-            foreach (var tp in importResultList)
-            {
-                Debug.Log($"firstgid:{tp.Item1}");
-                foreach (var source in tp.Item2)
-                {
-                    Debug.Log($"source:{source}");
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogAssertion(e.Message);
-        }
-
-        ////////////////////////////////////////////////
+        
         string DirectoryPath = SystemVariables.RootPath + "/Data";
         //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
         SystemVariables.CopiedFrom(this);
         JsonIO.TiledJsonConvert();
+        LoadSpriteList();
     }//Awake時にシステム関係(アイテム情報やマップチップ情報など)をロードして,SystemVariable.Initialize(this)で適用する.
     
     void Start()
@@ -103,11 +82,46 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
 
     //IJsonInitializable
     public void Initialize(string mapname) {
-
         MapControllScript mcs = GetComponent<MapControllScript>();
         if (mcs == null)
             mcs = gameObject.AddComponent<MapControllScript>();
         mcs.Initialize(mapname);
 
     } //マップ名を引数にとり,対応するディレクトリからDefault.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
+
+    void LoadSpriteList()
+    {
+        string rootPath = SystemVariables.RootPath;
+        string jsonPath = rootPath+ "/TiledData";
+        string tsxPath = rootPath + "/TiledData/tsx";
+        
+        string importJsonName = "MapDemo_Default";
+        try
+        {
+            var importResultList = TiledTsxImport.MapchipSourceImportFromTiled(jsonPath, importJsonName, tsxPath);
+            foreach (var tp in importResultList)
+            {
+                //Debug.Log($"firstgid:{tp.Item1}");
+                int firstgid = tp.Item1;
+                int id = 0;
+                ///ソースがマップチップデータでなければ複数のソースが返ってくる///
+                ///ソースがマップチップデータでも(ソースが一つでも)問題なく動作する///
+                foreach (var source in tp.Item2)
+                {
+                    ///ソースがマップチップデータなら一つのmultipleなspriteを読み込む必要がある///
+                    ///マップチップデータでなくても(spriteがmultipleでなくても)問題なく動作する///
+                    Sprite[] sprites= Resources.LoadAll<Sprite>($"Sprite/MapDemo/{source}");
+                    foreach (var sp in sprites)
+                    {
+                        SpriteList[firstgid + id] = sp;
+                        id++;
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogAssertion(e.Message);
+        }
+    }
 }
