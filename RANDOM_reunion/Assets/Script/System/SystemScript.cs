@@ -22,7 +22,13 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
         //JsonIO.JsonImport<SystemScript>(DirectoryPath, "System.json"); 現在読み込むべきシステム変数がないためコメントアウト
         SystemVariables.CopiedFrom(this);
         JsonIO.TiledJsonConvert();
-        LoadSpriteList();
+
+        ///sprite読み込み///
+        string jsonPath = SystemVariables.RootPath + "/TiledData";
+        string jsonName = "MapDemo_Default";
+        string tsxPath = SystemVariables.RootPath + "/TiledData/tsx";
+        LoadSpriteList(jsonPath,jsonName,tsxPath);
+
     }//Awake時にシステム関係(アイテム情報やマップチップ情報など)をロードして,SystemVariable.Initialize(this)で適用する.
     
     void Start()
@@ -89,30 +95,27 @@ public class SystemScript : MonoBehaviour, IJsonSaveLoadable, IJsonInitializable
 
     } //マップ名を引数にとり,対応するディレクトリからDefault.jsonを読み込み,Map,Buildingsに適用する.またMapNameも変える.
 
-    void LoadSpriteList()
+    void LoadSpriteList(string jsonPath,string jsonName,string tsxPath)
     {
-        string rootPath = SystemVariables.RootPath;
-        string jsonPath = rootPath+ "/TiledData";
-        string tsxPath = rootPath + "/TiledData/tsx";
-        
-        string importJsonName = "MapDemo_Default";
+        string spritePathUnderResources = "Sprite/MapDemo/";
         try
         {
-            var importResultList = TiledTsxImport.MapchipSourceImportFromTiled(jsonPath, importJsonName, tsxPath);
-            foreach (var tp in importResultList)
+            List< Tuple<int,List<string>> > importResultList = TiledTsxImport.MapchipSourceImportFromTiled(jsonPath, jsonName, tsxPath);
+            foreach (Tuple<int, List<string>> tp in importResultList)
             {
                 //Debug.Log($"firstgid:{tp.Item1}");
                 int firstgid = tp.Item1;
                 int id = 0;
                 ///ソースがマップチップデータでなければ複数のソースが返ってくる///
-                ///ソースがマップチップデータでも(ソースが一つでも)問題なく動作する///
-                foreach (var source in tp.Item2)
+                ///ソースがマップチップデータでも(＝ソースが一つでも)問題なく動作する///
+                foreach (string source in tp.Item2)
                 {
                     ///ソースがマップチップデータなら一つのmultipleなspriteを読み込む必要がある///
-                    ///マップチップデータでなくても(spriteがmultipleでなくても)問題なく動作する///
-                    Sprite[] sprites= Resources.LoadAll<Sprite>($"Sprite/MapDemo/{source}");
+                    ///マップチップデータでなくても(＝spriteがmultipleでなくても)問題なく動作する///
+                    Sprite[] sprites= Resources.LoadAll<Sprite>(spritePathUnderResources+source);
                     foreach (var sp in sprites)
                     {
+                        //firstgidから順にindexを増やしながらspriteを割り当てる
                         SpriteList[firstgid + id] = sp;
                         id++;
                     }
