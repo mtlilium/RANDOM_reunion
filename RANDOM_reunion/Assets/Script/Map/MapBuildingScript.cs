@@ -10,7 +10,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 {
     public MapControllScript Parent { get; set; }//このスクリプトを管理するMapController
     
-    public MapCoordinate Origin;//マップ座標系での基準点.MapController の MapSurface に充てられている場合は(X,Y)=(0,0)とすること.
+    public MapCoordinate Origin = new MapCoordinate(0, 0);//マップ座標系での基準点.MapController の MapSurface に充てられている場合は(X,Y)=(0,0)とすること.
     
     private string _BuildingName;
     public string BuildingName//建物などの名前(House1など)
@@ -38,6 +38,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
     
     public Field2D<MapChipScript> MapChipField;//マップチップの管理
 
+
     public bool ApplyInfoToMapChip()//自身の持つマップチップ情報を子のマップチップに適用
     {
         if (MapChipField == null)
@@ -50,9 +51,11 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
                 {
                     for (int j = 0; j < MapChipIDField_Height; j++)
                     {
-                        MapChipField.field[i][j].SpriteID = MapChipIDField.field[i][j];
-                        //MapChipField.field[i][j].Collision = CollisionField.field[i][j]; //現在当たり判定のデータの取り扱いが不明なためコメントアウト中
-                        MapChipField.field[i][j].Coordinate = new MapCoordinate(i, j);
+						if(MapChipField.field [i] [j]!=null){
+							MapChipField.field [i] [j].SpriteID = MapChipIDField.field [i] [j];
+							//MapChipField.field[i][j].Collision = CollisionField.field[i][j]; //現在当たり判定のデータの取り扱いが不明なためコメントアウト中
+							MapChipField.field[i][j].Coordinate = new MapCoordinate(i, j);
+						}
                     }
                 }
             }
@@ -163,17 +166,22 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
 
     private void InstantiateMapChip()//MapChipの生成
     {
-        if (MapChipField != null)
+        if (MapChipField == null)
         {
-            return;
+			MapChipField = new Field2D<MapChipScript>(MapChipIDField_Width, MapChipIDField_Height);
         }
-        MapChipField = new Field2D<MapChipScript>(MapChipIDField_Width, MapChipIDField_Height);
+
         for (int i = 0; i < MapChipIDField_Width; i++)
         {
-            for (int j = 0; j < MapChipIDField_Height; j++)
-            {
-                MapChipField.field[i][j] = Instantiate(SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript>();                
-            }
+			for (int j = 0; j < MapChipIDField_Height; j++) {
+
+				if (MapChipIDField.field [i] [j] != 0 && MapChipField.field[i][j] == null) {
+					MapChipField.field [i] [j] = Instantiate (SystemVariables.MapChipPrefab, transform).GetComponent<MapChipScript> ();                
+				}
+				else if (MapChipField.field [i] [j] != null) {
+					Destroy (MapChipField.field [i] [j].gameObject);
+				}
+			}
         }
         ApplyInfoToMapChip();
     }
@@ -186,7 +194,7 @@ public class MapBuildingScript : MonoBehaviour, IJsonSaveLoadable, IJsonTemporar
         {
             InstantiateMapChip();
         }
-        MapChipField.Foreach (x => x.Refresh());
+        MapChipField.Foreach (x => x?.Refresh());
     }
     
     [DataContract]
