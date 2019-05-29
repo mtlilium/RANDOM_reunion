@@ -12,14 +12,19 @@ public static class Flags /*:MonoBehaviour*/ {
 
     public static bool GetFlag(string flagname)
     {
-        if (FlagField.ContainsKey(flagname))
+        try
         {
-            return FlagField[flagname];
+            if (FlagField.ContainsKey(flagname))
+            {
+                return FlagField[flagname];
+            }
+            else
+                throw new KeyNotFoundException(flagname + "というキーは存在しません");
         }
-        else
+        catch(KeyNotFoundException e)
         {
-            Debug.Log(flagname + "というキーは存在しません");
-            return false;
+            Debug.LogError(e.Message);
+            throw;
         }
     }
     public static bool HaveFlag(string flagname)
