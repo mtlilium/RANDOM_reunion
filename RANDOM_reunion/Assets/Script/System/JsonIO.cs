@@ -41,7 +41,7 @@ public static class JsonIO
         }
         catch (Exception e)
         {
-            Debug.LogAssertion($"JsonIO.JsonImport<{typeof(T)}>()内で{path + '/' + name + ".json"}を読み込もうとした際に例外が発生.");
+            Debug.LogAssertion($"JsonIO.JsonImport<{typeof(T)}>()内で{path + '/' + name + ".json"}を読み込もうとした際に次の例外が発生:{e.Message}");
             return default(T);//あらゆる例外に対してdefaultを返す
         }
         
@@ -56,19 +56,18 @@ public static class JsonIO
         string[] splittedName = importname.Split('_');
         string header = splittedName[0];
         string footer = splittedName[1];
-        
+        string importPath =SystemVariables.RootPath + "/TiledData";
+        string importFileName = importname;
         try
         {
             TileMapData tiledData;//tiledのデータを保存するオブジェクト
-            string importPath =SystemVariables.RootPath + "/TiledData";
-            string importFileName = importname;
+            
             tiledData=JsonImport<TileMapData>(importPath, importFileName);//tiledのデータを読み込む
-
+            
             bool doneSuccessfully=true;//すべてのレイヤーをうまく読み込めればtrue
 
             foreach(var layer in tiledData.Layers){
                 var exportMapBuildingScriptForSerialization = new MapBuildingScript.MapBuildingScriptForSerialization();//一時保存用のMapBuildingScript.MapBuildingScriptForSerialization
-
                 exportMapBuildingScriptForSerialization.BuildingName = layer.Name;//BuildingNameにLayerの名前を代入
                 exportMapBuildingScriptForSerialization.Status = footer;
 
@@ -78,10 +77,12 @@ public static class JsonIO
                     minW = width-1, maxW = 0; //          〃           左/右      〃     位置
                 
                 exportMapBuildingScriptForSerialization.MapChipIDField = new Field2D<int>(width,height);
-
+                
                 for (int i=0;i<height;i++){
                     for(int j=0;j<width;j++){
+                        
                         long data=layer.Data[i*width+j];
+                        
                         if(data <=Int32.MaxValue){
                             exportMapBuildingScriptForSerialization.MapChipIDField.field[j][i] = (int)data;
                             if(data!=0){
@@ -95,7 +96,7 @@ public static class JsonIO
                         }
                     }
                 }
-
+                
                 exportMapBuildingScriptForSerialization.MapChipIDField_Height = maxH-minH+1;//端にある0の行を無視した時のマップの縦幅
                 exportMapBuildingScriptForSerialization.MapChipIDField_Width  = maxW-minW+1;//　　〃　　 列        〃          横幅
               
@@ -109,7 +110,7 @@ public static class JsonIO
         }
         catch(Exception e)
         {
-			Debug.LogAssertion($"{e.Message}///JsonIO.JsonExportFromTiled()内で{SystemVariables.RootPath}/sample.jsonを読み込もうとした際に例外が発生.");
+			Debug.LogAssertion($"JsonIO.JsonExportFromTiled()内で{importPath}/{importname}.jsonを読み込もうとした際に次の例外が発生:{e.Message}");
             return false;//あらゆる例外に対してdefaultを返す
         }
     }

@@ -1,0 +1,17 @@
+<tilesets>
+  <tileset>
+    <image source="aiueo"/>
+  </tileset>
+  <tileset>
+    <image source="kakikukeko"/>
+  </tileset>
+  <tileset>
+    <image source="sasisuseso"/>
+  </tileset>
+  <tileset>
+    <image source="tatituteto"/>
+  </tileset>
+  <tileset>
+    <image source="naninuneno"/>
+  </tileset>
+</tilesets>
