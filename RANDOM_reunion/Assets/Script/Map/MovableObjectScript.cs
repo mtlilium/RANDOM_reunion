@@ -31,10 +31,13 @@ public class MovableObjectScript : MonoBehaviour
 		Right,
 		Down,
 		DownLeft,
-		DownRight
+		DownRight,
+		Idol
 	}
 
-	directions state;
+	directions state=directions.Down;
+
+	directions lastDir=directions.Down;
 
     public void Move(Vector2 direction)//引数の方向に移動に移動量movementだけ移動
     {
@@ -46,6 +49,9 @@ public class MovableObjectScript : MonoBehaviour
 		GetState (direction);
 		if (stateDic [state] != null) {
 			sr.sprite = stateDic [state];
+			lastDir = state;
+		} else {
+			sr.sprite = stateDic [lastDir];
 		}
         DepthModification();
     }
@@ -85,6 +91,7 @@ public class MovableObjectScript : MonoBehaviour
 		stateDic.Add (directions.Down, Sprite_Down);
 		stateDic.Add (directions.DownLeft, Sprite_DownLeft);
 		stateDic.Add (directions.DownRight, Sprite_DownRight);
+		stateDic.Add (directions.Idol, null);
 		state = directions.Down;
 	}
 	private void Start(){
@@ -93,7 +100,6 @@ public class MovableObjectScript : MonoBehaviour
 
 	protected void InitializeOnStart(){
 		sr.sprite = stateDic [state];
-		Debug.Log (state);
 	}
 
 	//0311追加分
@@ -116,6 +122,7 @@ public class MovableObjectScript : MonoBehaviour
 			} else if (x > 0) {
 				state = directions.Right;
 			} else if (x == 0) {
+				state = directions.Idol;
 				return;
 			}
 		} else if (y < 0) {
